@@ -2,7 +2,7 @@
 window.Config = {
 
   // 站点名
-  SiteName: 'KK 服务器状态监控',
+  SiteName: 'xy 服务器状态监控',
 
   // 站点链接
   SiteUrl: '/',
@@ -24,8 +24,9 @@ window.Config = {
   // 导航栏菜单
   Navi: [
     {
-      text: 'KK的主页',
-      url: 'https://imkkcn.us.kg/'
+      text: 'xy的主页',
+      url: 'https://www.148668.xyz/'
     },
   ]
 };
+
