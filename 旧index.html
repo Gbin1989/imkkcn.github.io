@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>欢迎来到xy的主页 | welcome | Im xy</title>
+<!-- Stylesheets -->
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/responsive.css" rel="stylesheet">
+
+<!--Favicon-->
+<link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+<link rel="icon" href="images/favicon.png" type="image/x-icon">
+<!-- Responsive -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<!--[if lt IE 9]><script src="js/html5shiv.js"></script><![endif]-->
+<!--[if lt IE 9]><script src="js/respond.js"></script><![endif]-->
+</head>
+
+
+
+ <!-- 调用js -->
+<script src="https://blog.jichun29.cn/folder/layer.js"></script>
+<!-- 自定义右键菜单美化 -->
+  <style type="text/css">
+    a {text-decoration: none;}
+    div.usercm{background-repeat:no-repeat;background-position:center center;background-size:cover;background-color:#fff;font-size:13px!important;width:130px;-moz-box-shadow:1px 1px 3px rgba
+(0，0，0，.3);box-shadow:0px 0px 15px #333;position:absolute;display:none;z-index:10000;opacity:0.9; border-radius: 8px;}
+    div.usercm ul{list-style-type:none;list-style-position:outside;margin:0px;padding:0px;display:block}
+    div.usercm ul li{margin:0px;padding:0px;line-height:35px;}
+    div.usercm ul li a{color:#666;padding:0 15px;display:block}
+    div.usercm ul li a:hover{color:#fff;background:rgba(170,222,18,0.88)}
+    div.usercm ul li a i{margin-right:10px}
+    a.disabled{color:#c8c8c8!important;cursor:not-allowed}
+    a.disabled:hover{background-color:rgba(255,11,11,0)!important}
+    div.usercm{background:#fff !important;}
+    </style>
+<div class="usercm" style="left: 199px; top: 5px; display: none;">
+    <ul>
+        <li><a href="https://blog.jichun29.cn/"><i class="fa fa-home fa-fw"></i><span>首页</span></a></li>
+        <li><a href="javascript:void(0);" onclick="getSelect();"><i class="fa fa-copy fa-fw"></i><span>复制</span></a></li>
+        <li><a href="javascript:void(0);" onclick="baiduSearch();"><i class="fa fa-search fa-fw"></i><span>搜索</span></a></li>
+        <li><a href="javascript:history.go(1);"><i class="fa fa-arrow-right fa-fw"></i><span>前进</span></a></li>
+        <li><a href="javascript:history.go(-1);"><i class="fa fa-arrow-left fa-fw"></i><span>后退</span></a></li>
+        <li style="border-bottom:1px solid gray"><a href="javascript:window.location.reload();"><i class="fa fa-refresh fa-fw"></i><span>重载网页</span></a></li>
+        <li><a href="https://blog.jichun29.cn/links.html"><i class="fa fa-meh-o fa-fw"></i><span>和我当邻居</span></a></li>  
+           <li><a href="https://blog.jichun29.cn/links.html"><i class="fa fa-pencil-square-o fa-fw"></i><span>给我留言吧</span></a></li>
+    </ul>
+</div>
+<script type="text/javascript">
+    (function(a) {
+        a.extend({
+            mouseMoveShow: function(b) {
+                var d = 0,
+                    c = 0,
+                    h = 0,
+                    k = 0,
+                    e = 0,
+                    f = 0;
+                a(window).mousemove(function(g) {
+                    d = a(window).width();
+                    c = a(window).height();
+                    h = g.clientX;
+                    k = g.clientY;
+                    e = g.pageX;
+                    f = g.pageY;
+                    h + a(b).width() >= d && (e = e - a(b).width() - 5);
+                    k + a(b).height() >= c && (f = f - a(b).height() - 5);
+                    a("html").on({
+                        contextmenu: function(c) {
+                            3 == c.which && a(b).css({
+                                left: e,
+                                top: f
+                            }).show()
+                        },
+                        click: function() {
+                            a(b).hide()
+                        }
+                    })
+                })
+            },
+            disabledContextMenu: function() {
+                window.oncontextmenu = function() {
+                    return !1
+                }
+            }
+        })
+    })(jQuery);
+   
+    function getSelect() {
+        "" == (window.getSelection ? window.getSelection() : document.selection.createRange().text) ? layer.msg("啊噢...你没还没选择文字呢！") : document.execCommand("Copy")
+    }
+    function baiduSearch() {
+        var a = window.getSelection ? window.getSelection() : document.selection.createRange().text;
+        "" == a ? layer.msg("啊噢...你没还没选择文字呢！") : window.open("https://www.baidu.com/s?wd=" + a)
+    }
+    $(function() {
+        for (var a = navigator.userAgent, b = "Android;iPhone;SymbianOS;Windows Phone;iPad;iPod".split(";"), d = !0, c = 0; c < b.length; c++) if (0 < a.indexOf(b[c])) {
+            d = !1;
+            break
+        }
+        d && ($.mouseMoveShow(".usercm"), $.disabledContextMenu())
+    });
+    </script>
+
+
+ 
+ 
+<body>
+
+
+
+
+ 
+
+
+ 
+<div class="page-wrapper default-version">
+ 	
+    <!-- Preloader -->
+    <div class="preloader"></div>
+
+    <div class="page-background">
+        <div class="image-1"><img src="images/icons/shape/icon-1.png" alt=""></div>
+        <div class="image-7"><img src="images/icons/shape/icon-7.png" alt=""></div>
+        <canvas id="canvas"></canvas>
+    </div>
+    
+    <!-- Mobile menu -->
+    <div class="mobile-menu">
+        <div class="container">
+            <!--Nav Outer-->
+            <div class="nav-outer clearfix">
+                <div class="logo"><a href="index.html"><img src="images/logo.png" alt=""></a></div>
+                <!-- Main Menu -->
+                <nav class="main-menu">
+                    <div class="navbar-header">
+                        <!-- Toggle Button -->      
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    
+                    <div class="navbar-collapse collapse scroll-nav clearfix">
+                        <ul class="navigation clearfix">
+                            
+                            <li class="current"><a href="#home">Home</a></li>
+                            <li><a href="#about">关于</a></li>
+                            <li><a href="#resume">学历</a></li>
+                            <li><a href="#services">服务/a></li>
+                            <li><a href="#work">生活</a></li>
+                            <li><a href="https://148668.xyz/">博客</a></li>
+                            <li><a href="#contact">联系</a></li>
+
+                         </ul>
+                    </div>
+                </nav>
+                <!-- Main Menu End-->                        
+            </div>
+            <!--Nav Outer End-->            
+        </div>
+    </div>
+ 	
+    <div class="card-outer">
+        <div class="scroll-box">
+            <div class="container" data-animation-in="fadeInLeft" data-animation-out="fadeOutLeft">
+                <div class="card-wrapper">
+                    <div class="author-info" style="background-image:url(images/background/3.jpg)">
+                        <div class="image"><img src="images/resource/11.png" alt=""></div>
+                        <div class="author">
+                            <h3>IM xy CN
+                                
+                            </h3>
+                            <div class="designation">
+                                Hi 我是一个
+                                <div class="typing-title">
+                                    <p> <strong>Web开发的工作者.</strong></p>
+                                    <p> <strong>热爱天文的爱好者.</strong></p>
+                                    <p> <strong>高新科技爱好者.</strong></p>
+                                </div>
+                                <span class="typed-title"></span>
+                            </div>
+                        </div>
+                        <div class="link-btn">
+                            <a href="https://www.148668.xyz/tz.html" class="theme-btn btn-style-one">VPN</a>
+                        </div>
+                        <ul class="social-icon-two">
+                            <li><a href="http://t.me/Gbdg1989"><span class="fa fa-telegram"></span></a></li>
+                            <li><a href="https://x.com/Gbin_Jdz"><span class="fa fa-twitter"></span></a></li>
+                            <li><a href="https://148668.xyz/upload/mmqrcode1747220950496.png"><span class="fa fa-weixin"></span></a></li>
+                            <li><a href="#"><span class="fa fa-pinterest"></span></a></li>
+                                    <li><a href="#"><span class="fa fa-dribbble"></span></a></li>
+                        </ul>
+                    </div>
+                    <div class="card-inner-box">
+                        <header class="header wow fadeInLeft" data-wow-duration="1.5s">
+                            <ul class="main-menu">
+                                <li class="active home"><a class="logo" href="#home"><img src="images/logo.png" alt=""></a></li>
+                                <li><a href="#about"><i class="flaticon-social"></i>关于</a></li>
+                                <li><a href="#resume"><i class="flaticon-curriculum"></i>学历</a></li>
+                                <li><a href="#services"><i class="flaticon-layers-1"></i>服务</a></li>
+                                <li><a href="#work"><i class="flaticon-tools"></i>生活</a></li>
+                                <li><a href="https://148668.xyz/"><i class="flaticon-blog"></i>博客</a></li>
+                                <li><a href="#contact"><i class="flaticon-send-mail"></i>联系</a></li>
+                            </ul>
+                        </header>
+
+                        <!-- card item -->
+                        <div class="card-home card-item active" id="home" style="background-image:url(images/background/1.jpg)">
+
+                            <div class="card-inner wow fadeInUp" data-wow-duration="2s">
+                                <div class="image"><img src="images/resource/11.png" alt=""></div>
+                                <div class="author">
+                                    <h3>IM xy CN
+
+                                    </h3>
+                                    <div class="designation">
+                                Hi 我是一个
+                                <div class="typing-title">
+                                    <p> <strong>Web开发的工作者.</strong></p>
+                                    <p> <strong>热爱天文的爱好者.</strong></p>
+                                    <p> <strong>高新科技爱好者.</strong></p>
+                                        </div>
+                                        <span class="typed-title"></span>
+                                    </div>
+                                </div>
+                                <div class="text">您好,我叫xy,来自与中国浙江,很高兴你能来到我的个人主页,希望你能在这里更好的认识我.</div>
+                                <div class="link-btn">
+                                    <a href="https://www.148668.xyz/tz.html" class="theme-btn btn-style-one">VPN</a>
+                                    <a href="https://www.148668.xyz/kk/index.html" class="theme-btn btn-style-two">XY的私密</a>
+                                </div>
+                                <ul class="social-icon-two">
+                            <li><a href="http://t.me/Gbdg1989"><span class="fa fa-telegram"></span></a></li>
+                            <li><a href="https://x.com/Gbin_Jdz"><span class="fa fa-twitter"></span></a></li>
+                            <li><a href="https://148668.xyz/upload/mmqrcode1747220950496.png"><span class="fa fa-weixin"></span></a></li>
+                            <li><a href="#"><span class="fa fa-pinterest"></span></a></li>
+                                    <li><a href="#"><span class="fa fa-dribbble"></span></a></li>
+                                </ul>
+                            </div>
+                            
+                        </div>
+                        <!-- end item -->
+
+                        <!-- card item -->
+                        <div class="card-about card-item" id="about" style="background-image:url(images/background/2.jpg)">
+                            <div class="card-inner">
+                                <h4 class="title">关于我</h4>
+                                <div class="text">您好,我叫xy,来自与中国浙江,很高兴你能来到我的个人主页,希望你能在这里更好的认识我.</div>
+                                <div class="info-list">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="list-style-one">
+                                                <li><strong>Name:</strong>  xy</li>
+                                                <li><strong>Phone:</strong>  </li>
+                                                <li><strong>Address:</strong>  中国浙江</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="list-style-one">
+                                                <li><strong>Email:</strong>  csjhxk1989@gmail.com</li>
+                                                <li><strong>Freelance:</strong>  独立工作者</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>                                    
+                                <h4 class="title">技能</h4>
+                                <div class="row">
+                                    <!-- About Block -->
+                                    <div class="skill-block col-md-3 col-sm-4 col-xs-6">
+                                        <div class="inner-box">
+                                            <div class="graph-outer">
+                                                <input type="text" class="dial" data-fgColor="#9147ff" data-bgColor="#f5f5f5" data-width="90" data-height="90" data-linecap="normal"  value="68">
+                                                <div class="inner-text count-box"><span class="count-text" data-stop="68" data-speed="2000"></span>%</div>
+                                            </div>
+                                            <h3>编程</h3>
+                                        </div>
+                                    </div>
+
+                                    <!-- About Block -->
+                                    <div class="skill-block col-md-3 col-sm-4 col-xs-6">
+                                        <div class="inner-box">
+                                            <div class="graph-outer">
+                                                <input type="text" class="dial" data-fgColor="#ff5e7e" data-bgColor="#f5f5f5" data-width="90" data-height="90" data-linecap="normal"  value="75">
+                                                <div class="inner-text count-box"><span class="count-text" data-stop="75" data-speed="2000"></span>%</div>
+                                            </div>
+                                            <h3>创新</h3>
+                                        </div>
+                                    </div>
+
+                                    <!-- About Block -->
+                                    <div class="skill-block col-md-3 col-sm-4 col-xs-6">
+                                        <div class="inner-box">
+                                            <div class="graph-outer">
+                                                <input type="text" class="dial" data-fgColor="#ffc713" data-bgColor="#f5f5f5" data-width="90" data-height="90" data-linecap="normal"  value="70">
+                                                <div class="inner-text count-box"><span class="count-text" data-stop="70" data-speed="2000"></span>%</div>
+                                            </div>
+                                            <h3>学习 </h3>
+                                        </div>
+                                    </div>
+
+                                    <!-- About Block -->
+                                    <div class="skill-block col-md-3 col-sm-4 col-xs-6">
+                                        <div class="inner-box">
+                                            <div class="graph-outer">
+                                                <input type="text" class="dial" data-fgColor="#51dbc3" data-bgColor="#f5f5f5" data-width="90" data-height="90" data-linecap="normal"  value="47">
+                                                <div class="inner-text count-box"><span class="count-text" data-stop="47" data-speed="2000"></span>%</div>
+                                            </div>
+                                            <h3>生活 </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                        
+                            </div>
+                        </div>
+                        <!-- end item -->
+
+                        <!-- card item -->
+                        <div class="card-resume card-item" id="resume" style="background-image:url(images/background/2.jpg)">
+                            <div class="card-inner">
+                                <h4 class="title">学历</h4>
+                                <div class="row clearfix">
+                                    <!--Column-->
+                                    <div class="timeline-column col-md-6 col-sm-12 col-xs-12">
+                                        <div class="inner">
+                                            <div class="col-header"><div class="icon-box"><div class="icon-inner"><div class="icon"><span class="flaticon-book"></span></div></div></div> <h2>学业</h2></div>
+                                            
+                                            <!--Timeline Block-->
+                                            <div class="timeline-block">
+                                                <div class="inner-box">
+                                                    <h4>小学</h4>
+                                                    <div class="date"><span>2013-2019</span> / </div>
+                                                    <div class="text">小学的我十分调皮,经常不写作业,而且每个学期都干过坏事. </div>
+                                                </div>
+                                            </div>
+
+                                            <!--Timeline Block-->
+                                            <div class="timeline-block">
+                                                <div class="inner-box">
+                                                    <h4>初中</h4>
+                                                    <div class="date"><span>2019-2022</span> / </div>
+                                                    <div class="text">初中的我逐渐长大,青春的心理开始萌动,但也开始思考一下哲学问题. </div>
+                                                </div>
+                                            </div>
+
+                                            <!--Timeline Block-->
+                                            <div class="timeline-block">
+                                                <div class="inner-box">
+                                                    <h4>高中</h4>
+                                                    <div class="date"><span>2023-至今</span> / </div>
+                                                    <div class="text">高中的我逐渐成熟,整个人也开始沉静了下了,思想觉悟也开始不断提升. </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <!--Column-->
+                                    <div class="timeline-column col-md-6 col-sm-12 col-xs-12">
+                                        <div class="inner">
+                                            <div class="col-header"><div class="icon-box"><div class="icon-inner"><div class="icon"><span class="flaticon-case"></span></div></div></div> <h2>爱好</h2></div>
+                                            
+                                            <!--Timeline Block-->
+                                            <div class="timeline-block">
+                                                <div class="inner-box">
+                                                    <h4>天文</h4>
+                                                    <div class="date"><span>2010-至今</span> 拥有一台天文望远镜.</div>
+                                                    <div class="text">从小就喜欢,买了很多书,也用天文望远镜看到了不少. </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="timeline-block">
+                                                <div class="inner-box">
+                                                    <h4>计算机</h4>
+                                                    <div class="date"><span>2004-至今 </span> 疫情使我开始接触电脑.</div>
+                                                    <div class="text">初一开始认识电脑,初二开始学习一些网络知识,初三开始学习html,Java的编程语言,高一开始学习kaili Linux渗漏. </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="timeline-block">
+                                                <div class="inner-box">
+                                                    <h4>飞行</h4>
+                                                    <div class="date"><span>2010-至今 </span> 在模拟舱开过飞机.</div>
+                                                    <div class="text">从小喜欢,小学时用手机玩比较简单的模拟飞行,初中遇到一位飞友,开始学习驾驶波音737-800型号的飞机飞行,并在电脑是开始用XPLANE11进行模拟飞行训练,不久后我开始在真实的飞行模拟舱开始学习飞行. </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end item -->
+                        <!-- card item -->
+                        <div class="card-services card-item" id="services" style="background-image:url(images/background/2.jpg)">
+                            <div class="card-inner">
+                                <h4 class="title">服务</h4>
+                                <div class="row">
+                                    <div class="services-block col-md-6">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><span class="icon flaticon-pen-tool"></span></div>
+                                            <h4><a href="blog-single.html">创新</a></h4>
+                                            <div class="text">我也许可以帮你解决一下创新性的问题 </div>
+                                        </div> 
+                                    </div>
+                                    <div class="services-block col-md-6">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><span class="icon flaticon-folder"></span></div>
+                                            <h4><a href="blog-single.html">计算机</a></h4>
+                                            <div class="text">我也许可以帮你解决一些有关计算机网络的问题 </div>
+                                        </div> 
+                                    </div>
+                                    <div class="services-block col-md-6">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><span class="icon flaticon-computer"></span></div>
+                                            <h4><a href="blog-single.html">知识</a></h4>
+                                            <div class="text">我的学习面比较广,也许一下别人不会的问题我可以解决</div>
+                                        </div> 
+                                    </div>
+                                    <div class="services-block col-md-6">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><span class="icon flaticon-layers-1"></span></div>
+                                            <h4><a href="blog-single.html">运动</a></h4>
+                                            <div class="text">擅长打篮球,目前在学打乒乓球,我可以叫你怎么打好球 </div>
+                                        </div> 
+                                    </div>
+                                    <div class="services-block col-md-6">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><span class="icon flaticon-web-design"></span></div>
+                                            <h4><a href="blog-single.html">军事</a></h4>
+                                            <div class="text">这方面我也是比较了解的,如果你有这方面的问题你可以来找我 </div>
+                                        </div> 
+                                    </div>
+                                    <div class="services-block col-md-6">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><span class="icon flaticon-photo-camera"></span></div>
+                                            <h4><a href="blog-single.html">拍照</a></h4>
+                                            <div class="text">我很喜欢拍照,我也很擅长拍照,并且我还拥有一下拍摄用的设备 </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end item -->
+                        <!-- card item -->
+                        <div class="card-projects card-item" id="work" style="background-image:url(images/background/2.jpg)">
+                            <div class="card-inner">
+                                <h4 class="title">日常分享</h4>
+                                <div class="row">
+                                    <div class="projects-block col-md-6">
+                                        <div class="inner-box">
+                                            <figure class="image">
+                                                <img src="images/gallery/7.png" alt="image">
+                                                <div class="overlay">
+                                                    <a class="lightbox-image option-btn" title="Image Caption Here" data-fancybox-group="example-gallery" href="images/gallery/7.png">
+                                                        <i class="fa fa-search"></i>
+                                                    </a>                                
+                                                </div>
+                                            </figure>
+                                            <div class="caption-title">
+                                                <h3><a href="#">灌篮高手</a></h3>
+                                                <span>童年回忆</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="projects-block col-md-6">
+                                        <div class="inner-box">
+                                            <figure class="image">
+                                                <img src="images/gallery/2.jpg" alt="image">
+                                                <div class="overlay">
+                                                    <a class="lightbox-image option-btn" title="Image Caption Here" data-fancybox-group="example-gallery" href="images/gallery/2.jpg">
+                                                        <i class="fa fa-search"></i>
+                                                    </a>                                
+                                                </div>
+                                            </figure>
+                                            <div class="caption-title">
+                                                <h3><a href="#">首次用天文望远镜看到土星</a></h3>
+                                                <span>地球自转是一个麻烦的问题,使得我花了好大劲才对准了土星并拍了下来</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="projects-block col-md-6">
+                                        <div class="inner-box">
+                                            <figure class="image">
+                                                <img src="images/gallery/3.jpg" alt="image">
+                                                <div class="overlay">
+                                                    <a class="lightbox-image option-btn" title="Image Caption Here" data-fancybox-group="example-gallery" href="images/gallery/3.jpg">
+                                                        <i class="fa fa-search"></i>
+                                                    </a>                                
+                                                </div>
+                                            </figure>
+                                            <div class="caption-title">
+                                                <h3><a href="#">首次拍到银河</a></h3>
+                                                <span>在一个人烟稀少的海边,在经过30秒的曝光和后期的调色后才使银河能看得清</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="projects-block col-md-6">
+                                        <div class="inner-box">
+                                            <figure class="image">
+                                                <img src="images/gallery/9.png" alt="image">
+                                                <div class="overlay">
+                                                    <a class="lightbox-image option-btn" title="Image Caption Here" data-fancybox-group="example-gallery" href="images/gallery/9.png">
+                                                        <i class="fa fa-search"></i>
+                                                    </a>                                
+                                                </div>
+                                            </figure>
+                                            <div class="caption-title">
+                                                <h3><a href="#">kudog</a></h3>
+                                                <span>AI制作</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="projects-block col-sm-6">
+                                        <div class="inner-box">
+                                            <figure class="image">
+                                                <img src="images/gallery/5.jpg" alt="image">
+                                                <div class="overlay">
+                                                    <a class="lightbox-image option-btn" title="Image Caption Here" data-fancybox-group="example-gallery" href="images/gallery/5.jpg">
+                                                        <i class="fa fa-search"></i>
+                                                    </a>                                
+                                                </div>
+                                            </figure>
+                                            <div class="caption-title">
+                                                <h3><a href="#">歼20!!</a></h3>
+                                                <span>没想到在家就能看到歼20了</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="projects-block col-sm-6">
+                                        <div class="inner-box">
+                                            <figure class="image">
+                                                <img src="images/gallery/8.png" alt="image">
+                                                <div class="overlay">
+                                                    <a class="lightbox-image option-btn" title="Image Caption Here" data-fancybox-group="example-gallery" href="images/gallery/8.png">
+                                                        <i class="fa fa-search"></i>
+                                                    </a>                                
+                                                </div>
+                                            </figure>
+                                            <div class="caption-title">
+                                                <h3><a href="#">黑客素材</a></h3>
+                                                <span>1</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end item -->
+                        <!-- card item -->
+                        <div class="card-blog card-item" id="blog" style="background-image:url(images/background/2.jpg)">
+                            <div class="card-inner">
+                                <h4 class="title">博客</h4>
+                                <div class="news-block">
+                                    <div class="inner-box">
+                                        <div class="image">
+                                            <img src="images/resource/blog-1.jpg" alt="">
+                                            <div class="overlay">
+                                                <a class="link-btn" href="https://148668.xyz/">
+                                                    <i class="fa fa-link"></i>
+                                                </a>                                
+                                            </div>
+                                        </div>
+                                        <div class="date"><strong>02</strong> <br>Sep</div>
+                                        <div class="lower-content">
+                                            <h4><a href="https://148668.xyz/">点击进入我的博客</a></h4>
+                                            <div class="post-meta">by xy  /  <span>2024</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                        <!-- end item -->
+                        <!-- card item -->
+                        <div class="card-contact card-item" id="contact" style="background-image:url(images/background/2.jpg)">
+                            <div class="card-inner">
+                                <h3 class="title">联系方式</h3>
+                                <h4>我的联系方式</h4>
+                                <div class="row clearfix">
+                                    <div class="col-md-6">
+                                        <ul class="list-style-two">
+                                            <li><span class="icon flaticon-signs"></span>中国浙江 <br>  </li>
+                                            <li><span class="icon flaticon-smartphone"></span>(+86)  <br>(+86) </li>
+                                            <li><span class="icon flaticon-note-1"></span>csjhxk1989@gmail.com <br>csjhxk@126.com</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="map-section">
+                                            <div class="home-google-map">
+                                                <div 
+                                                    class="google-map" 
+                                                    id="contact-google-map" 
+                                                    data-map-lat="40.700843" 
+                                                    data-map-lng="-74.004012" 
+                                                    data-icon-path="images/icons/map-marker.png"
+                                                    data-map-title="Chester"
+                                                    data-map-zoom="11" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h4>How Can I Help?</h4>
+                                <!-- Contact Form -->
+                                <div class="contact-form">
+                                    <!--Comment Form-->
+                                    <form method="post" action="sendemail.php" id="contact-form">
+                                        <div class="row clearfix">
+                                            
+                                            <div class="col-md-6 form-group">
+                                                <input type="text" name="username" placeholder="Name" required>
+                                            </div>
+                                            
+                                            <div class="col-md-6 form-group">
+                                                <input type="email" name="email" placeholder="Email" required>
+                                            </div>
+                                            
+                                            <div class="col-md-6 form-group">
+                                                <input type="text" name="subject" placeholder="Subject" required>
+                                            </div>
+
+                                            <div class="col-md-6 form-group">
+                                                <input type="text" name="phone" placeholder="Phone" required>
+                                            </div>
+
+                                            <div class="col-lg-12 col-md-12 form-group">
+                                                <textarea name="message" placeholder="Message"></textarea>
+                                            </div>
+                                            
+                                            <div class="col-lg-12 col-md-12 form-group">
+                                                <button class="theme-btn btn-style-two" type="submit" name="submit-form">提交 </button>
+                                            </div>
+                                            
+                                        </div>
+                                    </form>
+                                        
+                                </div>
+                                <!--End Contact Form -->
+                                        
+                            </div>
+                        </div>
+                        <!-- end item -->
+
+                    </div>
+                </div>
+                    
+            </div>
+        </div>
+            
+    </div>
+
+</div>
+<!--End pagewrapper-->
+
+
+ <script>
+function fuckyou(){
+window.close(); //关闭当前窗口(防抽)
+window.location="about:blank"; //将当前窗口跳转置空白页
+}
+
+function click(e) {
+if (document.all) {
+if (event.button==2||event.button==3) { 
+alert("禁止拿代码");
+oncontextmenu='return false';
+}
+}
+if (document.layers) {
+if (e.which == 3) {
+oncontextmenu='return false';
+}
+}
+}
+if (document.layers) {
+fuckyou();
+document.captureEvents(Event.MOUSEDOWN);
+}
+document.onmousedown=click;
+document.oncontextmenu = new Function("return false;")
+document.onkeydown =document.onkeyup = document.onkeypress=function(){ 
+if(window.event.keyCode == 123) { 
+fuckyou();
+window.event.returnValue=false;
+return(false); 
+} 
+}
+</script>
+
+
+
+
+<script src="js/jquery.js"></script> 
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="js/owl.js"></script>
+<script src="js/wow.js"></script>
+<script src="js/appear.js"></script>
+<script src="js/jquery.fancybox.js"></script>
+<script src="js/element-in-view.js"></script>
+<script src="js/knob.js"></script>
+<script src="js/validate.js"></script>
+<script src="js/mousemoveparallax.js"></script>
+<script src="js/pagenav.js"></script>
+<script src="js/jquery-type.js"></script>
+<script src="js/jquery.nicescroll.min.js"></script>
+<script src="js/particle-alone.js"></script>
+<script src="js/script.js"></script>
+
+<!--Google Map APi Key-->
+<script src="http://ditu.google.cn/maps/api/js?key=AIzaSyATY4Rxc8jNvDpsK8ZetC7JyN4PFVYGCGM"></script>
+<script src="js/gmaps.js"></script>
+<script src="js/map-script.js"></script>
+<!--End Google Map APi-->
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
