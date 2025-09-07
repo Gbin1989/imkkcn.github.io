@@ -25,9 +25,10 @@ window.Config = {
   Navi: [
     {
       text: 'xy的主页',
-      url: 'https://www.148668.xyz/'
+      url: 'https://xy.148668.xyz/'
     },
   ]
 };
+
 
 
