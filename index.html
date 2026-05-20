@@ -7,6 +7,8 @@
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
 <link href="css/responsive.css" rel="stylesheet">
+<!-- 新增：Font Awesome 图标 -->
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!--Favicon-->
 <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
@@ -16,26 +18,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <!--[if lt IE 9]><script src="js/html5shiv.js"></script><![endif]-->
 <!--[if lt IE 9]><script src="js/respond.js"></script><![endif]-->
+
+<!-- 先加载 jQuery -->
+<script src="js/jquery.js"></script>
+<!-- 弹窗插件 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/layer/3.1.1/layer.js"></script>
 </head>
 
+<body>
 
-
- <!-- 调用js -->
-<script src="https://blog.jichun29.cn/folder/layer.js"></script>
 <!-- 自定义右键菜单美化 -->
-  <style type="text/css">
-    a {text-decoration: none;}
-    div.usercm{background-repeat:no-repeat;background-position:center center;background-size:cover;background-color:#fff;font-size:13px!important;width:130px;-moz-box-shadow:1px 1px 3px rgba
-(0，0，0，.3);box-shadow:0px 0px 15px #333;position:absolute;display:none;z-index:10000;opacity:0.9; border-radius: 8px;}
-    div.usercm ul{list-style-type:none;list-style-position:outside;margin:0px;padding:0px;display:block}
-    div.usercm ul li{margin:0px;padding:0px;line-height:35px;}
-    div.usercm ul li a{color:#666;padding:0 15px;display:block}
-    div.usercm ul li a:hover{color:#fff;background:rgba(170,222,18,0.88)}
-    div.usercm ul li a i{margin-right:10px}
-    a.disabled{color:#c8c8c8!important;cursor:not-allowed}
-    a.disabled:hover{background-color:rgba(255,11,11,0)!important}
-    div.usercm{background:#fff !important;}
-    </style>
+<style type="text/css">
+a {text-decoration: none;}
+div.usercm{background-repeat:no-repeat;background-position:center center;background-size:cover;background-color:#fff;font-size:13px!important;width:130px;box-shadow:0px 0px 15px #333;position:absolute;display: none;z-index:10000;opacity:0.9; border-radius: 8px;}
+div.usercm ul{list-style-type:none;list-style-position:outside;margin:0px;padding:0px;display:block}
+div.usercm ul li{margin:0px;padding:0px;line-height:35px;}
+div.usercm ul li a{color:#666;padding:0 15px;display:block}
+div.usercm ul li a:hover{color:#fff;background:rgba(170,222,18,0.88)}
+div.usercm ul li a i{margin-right:10px}
+a.disabled{color:#c8c8c8!important;cursor:not-allowed}
+a.disabled:hover{background-color:rgba(255,11,11,0)!important}
+div.usercm{background:#fff !important;}
+</style>
+
 <div class="usercm" style="left: 199px; top: 5px; display: none;">
     <ul>
         <li><a href="https://blog.jichun29.cn/"><i class="fa fa-home fa-fw"></i><span>首页</span></a></li>
@@ -45,79 +50,81 @@
         <li><a href="javascript:history.go(-1);"><i class="fa fa-arrow-left fa-fw"></i><span>后退</span></a></li>
         <li style="border-bottom:1px solid gray"><a href="javascript:window.location.reload();"><i class="fa fa-refresh fa-fw"></i><span>重载网页</span></a></li>
         <li><a href="https://blog.jichun29.cn/links.html"><i class="fa fa-meh-o fa-fw"></i><span>和我当邻居</span></a></li>  
-           <li><a href="https://blog.jichun29.cn/links.html"><i class="fa fa-pencil-square-o fa-fw"></i><span>给我留言吧</span></a></li>
+        <li><a href="https://blog.jichun29.cn/links.html"><i class="fa fa-pencil-square-o fa-fw"></i><span>给我留言吧</span></a></li>
     </ul>
 </div>
+
 <script type="text/javascript">
-    (function(a) {
-        a.extend({
-            mouseMoveShow: function(b) {
-                var d = 0,
-                    c = 0,
-                    h = 0,
-                    k = 0,
-                    e = 0,
-                    f = 0;
-                a(window).mousemove(function(g) {
-                    d = a(window).width();
-                    c = a(window).height();
-                    h = g.clientX;
-                    k = g.clientY;
-                    e = g.pageX;
-                    f = g.pageY;
-                    h + a(b).width() >= d && (e = e - a(b).width() - 5);
-                    k + a(b).height() >= c && (f = f - a(b).height() - 5);
-                    a("html").on({
-                        contextmenu: function(c) {
-                            3 == c.which && a(b).css({
-                                left: e,
-                                top: f
-                            }).show()
-                        },
-                        click: function() {
-                            a(b).hide()
-                        }
-                    })
+(function(a) {
+    a.extend({
+        mouseMoveShow: function(b) {
+            var d = 0,
+                c = 0,
+                h = 0,
+                k = 0,
+                e = 0,
+                f = 0;
+            a(window).mousemove(function(g) {
+                d = a(window).width();
+                c = a(window).height();
+                h = g.clientX;
+                k = g.clientY;
+                e = g.pageX;
+                f = g.pageY;
+                h + a(b).width() >= d && (e = e - a(b).width() - 5);
+                k + a(b).height() >= c && (f = f - a(b).height() - 5);
+                a("html").on({
+                    contextmenu: function(c) {
+                        3 == c.which && a(b).css({
+                            left: e,
+                            top: f
+                        }).show()
+                    },
+                    click: function() {
+                        a(b).hide()
+                    }
                 })
-            },
-            disabledContextMenu: function() {
-                window.oncontextmenu = function() {
-                    return !1
-                }
+            })
+        },
+        disabledContextMenu: function() {
+            window.oncontextmenu = function() {
+                return !1
             }
-        })
-    })(jQuery);
-   
-    function getSelect() {
-        "" == (window.getSelection ? window.getSelection() : document.selection.createRange().text) ? layer.msg("啊噢...你没还没选择文字呢！") : document.execCommand("Copy")
-    }
-    function baiduSearch() {
-        var a = window.getSelection ? window.getSelection() : document.selection.createRange().text;
-        "" == a ? layer.msg("啊噢...你没还没选择文字呢！") : window.open("https://www.baidu.com/s?wd=" + a)
-    }
-    $(function() {
-        for (var a = navigator.userAgent, b = "Android;iPhone;SymbianOS;Windows Phone;iPad;iPod".split(";"), d = !0, c = 0; c < b.length; c++) if (0 < a.indexOf(b[c])) {
-            d = !1;
-            break
         }
-        d && ($.mouseMoveShow(".usercm"), $.disabledContextMenu())
-    });
-    </script>
+    })
+})(jQuery);
 
+function getSelect() {
+    var text = window.getSelection ? window.getSelection().toString() : document.selection.createRange().text;
+    if(text == ""){
+        layer.msg("啊噢...你没还没选择文字呢！");
+    }else{
+        document.execCommand("Copy");
+        layer.msg("复制成功！");
+    }
+}
+function baiduSearch() {
+    var a = window.getSelection ? window.getSelection() : document.selection.createRange().text;
+    "" == a ? layer.msg("啊噢...你没还没选择文字呢！") : window.open("https://www.baidu.com/s?wd=" + a)
+}
+$(function() {
+    var a = navigator.userAgent;
+    var devices = ["Android","iPhone","SymbianOS","Windows Phone","iPad","iPod"];
+    var isPC = true;
+    for(var i=0;i<devices.length;i++){
+        if(a.indexOf(devices[i]) > -1){
+            isPC = false;
+            break;
+        }
+    }
+    if(isPC){
+        $.mouseMoveShow(".usercm");
+        $.disabledContextMenu();
+    }
+});
+</script>
 
- 
- 
-<body>
-
-
-
-
- 
-
-
- 
 <div class="page-wrapper default-version">
- 	
     <!-- Preloader -->
     <div class="preloader"></div>
 
@@ -130,13 +137,10 @@
     <!-- Mobile menu -->
     <div class="mobile-menu">
         <div class="container">
-            <!--Nav Outer-->
             <div class="nav-outer clearfix">
                 <div class="logo"><a href="index.html"><img src="images/logo.png" alt=""></a></div>
-                <!-- Main Menu -->
                 <nav class="main-menu">
                     <div class="navbar-header">
-                        <!-- Toggle Button -->      
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
@@ -146,19 +150,15 @@
                     
                     <div class="navbar-collapse collapse scroll-nav clearfix">
                         <ul class="navigation clearfix">
-                            
                             <li class="current"><a href="#home">Home</a></li>
                             <li><a href="#about">关于</a></li>
                             <li><a href="#services">服务</a></li>
                             <li><a href="https://blog.148668.xyz/">博客</a></li>
                             <li><a href="#contact">联系</a></li>
-
                          </ul>
                     </div>
-                </nav>
-                <!-- Main Menu End-->                        
-            </div>
-            <!--Nav Outer End-->            
+                </nav>                     
+            </div>         
         </div>
     </div>
  	
@@ -169,15 +169,13 @@
                     <div class="author-info" style="background-image:url(images/background/3.jpg)">
                         <div class="image"><img src="images/resource/11.png" alt=""></div>
                         <div class="author">
-                            <h3>IM xy CN
-                                
-                            </h3>
+                            <h3>IM xy CN</h3>
                             <div class="designation">
                                 Hi 我是一个
                                 <div class="typing-title">
-                                    <p> <strong>Web开发的工作者.</strong></p>
-                                    <p> <strong>热爱天文的爱好者.</strong></p>
-                                    <p> <strong>高新科技爱好者.</strong></p>
+                                    <p><strong>Web开发的工作者.</strong></p>
+                                    <p><strong>热爱天文的爱好者.</strong></p>
+                                    <p><strong>高新科技爱好者.</strong></p>
                                 </div>
                                 <span class="typed-title"></span>
                             </div>
@@ -190,7 +188,7 @@
                             <li><a href="https://x.com/Gbin_Jdz"><span class="fa fa-twitter"></span></a></li>
                             <li><a href="https://148668.xyz/upload/mmqrcode1747220950496.png"><span class="fa fa-weixin"></span></a></li>
                             <li><a href="#"><span class="fa fa-pinterest"></span></a></li>
-                                    <li><a href="#"><span class="fa fa-dribbble"></span></a></li>
+                            <li><a href="#"><span class="fa fa-dribbble"></span></a></li>
                         </ul>
                     </div>
                     <div class="card-inner-box">
@@ -204,53 +202,46 @@
                             </ul>
                         </header>
 
-                        <!-- card item -->
                         <div class="card-home card-item active" id="home" style="background-image:url(images/background/1.jpg)">
-
                             <div class="card-inner wow fadeInUp" data-wow-duration="2s">
                                 <div class="image"><img src="images/resource/11.png" alt=""></div>
                                 <div class="author">
-                                    <h3>IM xy CN
-
-                                    </h3>
+                                    <h3>iM KuDog Xy</h3>
                                     <div class="designation">
-                                Hi 我是一个
-                                <div class="typing-title">
-                                    <p> <strong>Web开发的工作者.</strong></p>
-                                    <p> <strong>热爱天文的爱好者.</strong></p>
-                                    <p> <strong>高新科技爱好者.</strong></p>
+                                        Hi 我是一个
+                                        <div class="typing-title">
+                                            <p><strong>Web开发的工作者.</strong></p>
+                                            <p><strong>热爱天文的爱好者.</strong></p>
+                                            <p><strong>高新科技爱好者.</strong></p>
                                         </div>
                                         <span class="typed-title"></span>
                                     </div>
                                 </div>
-                                <div class="text">您好,我叫xy,来自与中国浙江,很高兴你能来到我的个人主页,希望你能在这里更好的认识我.</div>
+                                <div class="text">你好,我叫xy,很高兴你能来到我的个人主页,希望你能在这里更好的认识我.</div>
                                 <div class="link-btn">
-                                    <a href="https://blog.148668.xyz/" class="theme-btn btn-style-one">博客</a>
+                                    <a href="https://bcian.cn/" class="theme-btn btn-style-one">导航页</a>
                                     <a href="https://xy.148668.xyz/kk/index.html" class="theme-btn btn-style-two">XY项目</a>
                                 </div>
                                 <ul class="social-icon-two">
-                            <li><a href="http://t.me/Gbdg1989"><span class="fa fa-telegram"></span></a></li>
-                            <li><a href="https://x.com/Gbin_Jdz"><span class="fa fa-twitter"></span></a></li>
-                            <li><a href="https://148668.xyz/upload/mmqrcode1747220950496.png"><span class="fa fa-weixin"></span></a></li>
-                            <li><a href="#"><span class="fa fa-pinterest"></span></a></li>
-                                    <li><a href="#"><span class="fa fa-dribbble"></span></a></li>
+                                    <li><a href="http://t.me/Gbdg1989"><span class="fa fa-telegram"></span></a></li>
+                                    <li><a href="https://x.com/Gbin_Jdz"><span class="fa fa-twitter"></span></a></li>
+                                    <li><a href="https://bcian.cn/wx.jpg"><span class="fa fa-weixin"></span></a></li>
+                                    <li><a href="https://bcian.cn"><span class="fa fa-pinterest"></span></a></li>
+                                    <li><a href="https://bcian.cn"><span class="fa fa-dribbble"></span></a></li>
                                 </ul>
                             </div>
-                            
                         </div>
-                        <!-- end item -->
 
-                        <!-- card item -->
                         <div class="card-about card-item" id="about" style="background-image:url(images/background/2.jpg)">
                             <div class="card-inner">
                                 <h4 class="title">关于我</h4>
-                                <div class="text">您好,我叫xy,来自与中国浙江,很高兴你能来到我的个人主页,希望你能在这里更好的认识我.</div>
+                                <div class="text">你好,我叫xy,很高兴你能来到我的个人主页,希望你能在这里更好的认识我.</div>
                                 <div class="info-list">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <ul class="list-style-one">
                                                 <li><strong>Name:</strong>  xy</li>
-                                                <li><strong>Phone:</strong>  </li>
+                                                <li><strong>QQ:</strong> 304765913</li>
                                                 <li><strong>Address:</strong>  中国浙江</li>
                                             </ul>
                                         </div>
@@ -264,7 +255,6 @@
                                 </div>                                    
                                 <h4 class="title">技能</h4>
                                 <div class="row">
-                                    <!-- About Block -->
                                     <div class="skill-block col-md-3 col-sm-4 col-xs-6">
                                         <div class="inner-box">
                                             <div class="graph-outer">
@@ -274,8 +264,6 @@
                                             <h3>编程</h3>
                                         </div>
                                     </div>
-
-                                    <!-- About Block -->
                                     <div class="skill-block col-md-3 col-sm-4 col-xs-6">
                                         <div class="inner-box">
                                             <div class="graph-outer">
@@ -285,8 +273,6 @@
                                             <h3>创新</h3>
                                         </div>
                                     </div>
-
-                                    <!-- About Block -->
                                     <div class="skill-block col-md-3 col-sm-4 col-xs-6">
                                         <div class="inner-box">
                                             <div class="graph-outer">
@@ -296,8 +282,6 @@
                                             <h3>学习 </h3>
                                         </div>
                                     </div>
-
-                                    <!-- About Block -->
                                     <div class="skill-block col-md-3 col-sm-4 col-xs-6">
                                         <div class="inner-box">
                                             <div class="graph-outer">
@@ -308,12 +292,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                        
                             </div>
                         </div>
-                        <!-- end item -->
 
-                        <!-- card item -->
                         <div class="card-services card-item" id="services" style="background-image:url(images/background/2.jpg)">
                             <div class="card-inner">
                                 <h4 class="title">服务</h4>
@@ -363,8 +344,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- end item -->
-                        <!-- card item -->
+
                         <div class="card-blog card-item" id="blog" style="background-image:url(images/background/2.jpg)">
                             <div class="card-inner">
                                 <h4 class="title">博客</h4>
@@ -385,11 +365,9 @@
                                         </div>
                                     </div>
                                 </div>
-                               
                             </div>
                         </div>
-                        <!-- end item -->
-                        <!-- card item -->
+
                         <div class="card-contact card-item" id="contact" style="background-image:url(images/background/2.jpg)">
                             <div class="card-inner">
                                 <h3 class="title">联系方式</h3>
@@ -397,71 +375,26 @@
                                 <div class="row clearfix">
                                     <div class="col-md-6">
                                         <ul class="list-style-two">
-                                            <li><span class="icon flaticon-signs"></span>中国浙江 <br>  </li>
-                                            <li><span class="icon flaticon-smartphone"></span>(+86)  <br>(+86) </li>
-                                            <li><span class="icon flaticon-note-1"></span>csjhxk1989@gmail.com <br>csjhxk@126.com</li>
+                                            <li><span class="icon flaticon-signs"></span>中国</li>
+                                            <li><span class="icon flaticon-smartphone"></span>(+86)</li>
+                                            <li><span class="icon flaticon-note-1"></span>csjhxk1989@gmail.com <br>QQ:304765913</li>
                                         </ul>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="map-section">
                                             <div class="home-google-map">
-                                                <div 
-                                                    class="google-map" 
-                                                    id="contact-google-map" 
-                                                    data-map-lat="40.700843" 
-                                                    data-map-lng="-74.004012" 
-                                                    data-icon-path="images/icons/map-marker.png"
-                                                    data-map-title="Chester"
-                                                    data-map-zoom="11" >
-                                                </div>
+                                                <div class="google-map" id="contact-google-map" data-map-lat="40.700843" data-map-lng="-74.004012" data-icon-path="images/icons/map-marker.png" data-map-title="Chester" data-map-zoom="11" ></div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
                         </div>
-                        <!-- end item -->
                  </div>
+            </div>
+        </div>
+    </div>
 </div>
-<!--End pagewrapper-->
-
-
- <script>
-function fuckyou(){
-window.close(); //关闭当前窗口(防抽)
-window.location="about:blank"; //将当前窗口跳转置空白页
-}
-
-function click(e) {
-if (document.all) {
-if (event.button==2||event.button==3) { 
-alert("禁止拿代码");
-oncontextmenu='return false';
-}
-}
-if (document.layers) {
-if (e.which == 3) {
-oncontextmenu='return false';
-}
-}
-}
-if (document.layers) {
-fuckyou();
-document.captureEvents(Event.MOUSEDOWN);
-}
-document.onmousedown=click;
-document.oncontextmenu = new Function("return false;")
-document.onkeydown =document.onkeyup = document.onkeypress=function(){ 
-if(window.event.keyCode == 123) { 
-fuckyou();
-window.event.returnValue=false;
-return(false); 
-} 
-}
-</script>
-
-
-
-
-<script src="js/jquery.js"></script> 
 
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
@@ -479,14 +412,9 @@ return(false);
 <script src="js/particle-alone.js"></script>
 <script src="js/script.js"></script>
 
-<!--Google Map APi Key-->
 <script src="http://ditu.google.cn/maps/api/js?key=AIzaSyATY4Rxc8jNvDpsK8ZetC7JyN4PFVYGCGM"></script>
 <script src="js/gmaps.js"></script>
 <script src="js/map-script.js"></script>
-<!--End Google Map APi-->
 
 </body>
 </html>
-     
-
-
