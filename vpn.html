@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KryptoKernel Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="shortcut icon" href="images/k.png" type="image/x-icon">
     <link rel="icon" href="images/k.png" type="image/x-icon">
     
     <style>
@@ -15,20 +14,20 @@
             --light: #F8FAFC;
             --card-bg: rgba(255, 255, 255, 0.03);
         }
-    
+
         [data-theme="light"] {
             --dark: #F8FAFC;
             --light: #0A0A12;
             --card-bg: rgba(0, 0, 0, 0.03);
         }
-    
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-    
+
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--dark);
@@ -50,7 +49,7 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
         }
         .particles {
             position: relative;
@@ -66,6 +65,9 @@
             animation: particle 1.8s infinite ease-in-out;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
+        .particle:nth-child(1) { animation-delay: 0s; }
+        .particle:nth-child(2) { animation-delay: 0.2s; }
+        .particle:nth-child(3) { animation-delay: 0.4s; }
         @keyframes particle {
             0%,100% { transform: translate(0, 0); opacity: 1; }
             25% { transform: translate(40px, -20px); opacity: 0.8; }
@@ -79,6 +81,10 @@
             letter-spacing: 2px;
             animation: text-pulse 1.5s infinite;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        @keyframes text-pulse {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
         #preloader::before {
             content: '';
@@ -106,8 +112,8 @@
         }
         .control-bar {
             position: fixed;
-            top: 2rem;
-            right: 2rem;
+            top: 1.5rem;
+            right: 1.5rem;
             display: flex;
             gap: 1rem;
             z-index: 1000;
@@ -116,10 +122,11 @@
             background: var(--card-bg);
             color: var(--light);
             border: 1px solid rgba(42, 171, 238, 0.2);
-            padding: 0.8rem 1.5rem;
+            padding: 0.8rem 1.2rem;
             border-radius: 8px;
             cursor: pointer;
             backdrop-filter: blur(10px);
+            outline: none;
         }
         .lang-select-wrapper {
             position: relative;
@@ -127,7 +134,7 @@
         .lang-select-wrapper::after {
             content: "▼";
             position: absolute;
-            right: 1rem;
+            right: 0.8rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--primary);
@@ -137,25 +144,26 @@
         .container {
             max-width: 1440px;
             margin: 0 auto;
-            padding: 6rem 2rem;
+            padding: 4rem 1.2rem;
         }
         header {
             text-align: center;
-            margin: 8rem 0;
+            margin: 5rem 0 6rem;
             position: relative;
         }
         header h1 {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
+            font-size: clamp(2.4rem, 6vw, 4rem);
+            margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--primary) 30%, #fff 70%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .section-title {
-            font-size: 2.8rem;
-            margin: 6rem 0 4rem;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            margin: 5rem 0 2.5rem;
             position: relative;
-            padding-left: 2rem;
+            padding-left: 1.5rem;
         }
         .section-title::before {
             content: '';
@@ -163,25 +171,26 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: 8px;
-            height: 80%;
+            width: 6px;
+            height: 75%;
             background: var(--primary);
             border-radius: 4px;
         }
         .node-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 4rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
         }
         .node-card {
             background: var(--card-bg);
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 16px;
             border: 1px solid rgba(42, 171, 238, 0.1);
             backdrop-filter: blur(12px);
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
         .node-card::before {
             content: '';
@@ -190,24 +199,43 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle at 50% 50%, rgba(42, 171, 238, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle at 50% 50%, rgba(42, 171, 238, 0.08) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
         }
         .node-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 16px 40px rgba(42, 171, 238, 0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(42, 171, 238, 0.1);
+            border-color: rgba(42, 171, 238, 0.25);
         }
         @keyframes rotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .node-icon {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
         .link-box {
             background: var(--card-bg);
-            padding: 1.5rem;
+            padding: 1.2rem 1.5rem;
             border-radius: 12px;
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             border: 1px solid rgba(42, 171, 238, 0.1);
-            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .link-box input {
+            flex: 1;
+            min-width: 200px;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            padding: 0.4rem;
+            font-size: 1rem;
         }
         .copy-btn {
             background: rgba(42, 171, 238, 0.1);
@@ -216,22 +244,26 @@
             padding: 0.6rem 1.2rem;
             border-radius: 8px;
             cursor: pointer;
+            white-space: nowrap;
+        }
+        .copy-btn:hover {
+            background: rgba(42, 171, 238, 0.15);
         }
 
         /* 下载样式 */
         .download-section {
-            background: #1a1a1a;
-            padding: 20px;
+            background: var(--card-bg);
+            padding: 1.5rem;
             border-radius: 8px;
-            margin: 20px 0;
-            border: 1px solid #2c3e50;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(42, 171, 238, 0.1);
         }
         .note {
             color: #95a5a6;
             font-size: 0.9em;
             border-left: 3px solid #34495e;
             padding-left: 10px;
+            margin-top: 0.8rem;
         }
         code {
             background: #2c3e50;
@@ -240,49 +272,67 @@
             border-radius: 3px;
             font-family: monospace;
         }
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
 
         /* 教程卡片 */
         .card {
-            background: #121212;
-            border-radius: 6px;
+            background: var(--card-bg);
+            border-radius: 8px;
             padding: 1.5rem;
-            margin: 2rem 0;
-            border: 1px solid #2a2a2a;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            margin: 1.8rem 0;
+            border: 1px solid rgba(42, 171, 238, 0.1);
         }
         .step {
             counter-increment: step;
-            margin: 1.8rem 0;
-            padding-left: 2.5rem;
+            margin: 1.2rem 0;
+            padding-left: 2.2rem;
             position: relative;
+            line-height: 1.6;
         }
         .step::before {
             content: counter(step);
             position: absolute;
             left: 0;
-            top: -0.2em;
-            width: 24px;
-            height: 24px;
-            background: #2a2a2a;
+            top: 0;
+            width: 22px;
+            height: 22px;
+            background: var(--card-bg);
             color: var(--primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 0.9rem;
+            border: 1px solid rgba(42, 171, 238, 0.2);
         }
         .warning {
             color: #FF6B6B;
             border-left: 3px solid #FF6B6B;
-            padding-left: 1rem;
-            margin: 1.5rem 0;
+            padding: 0.8rem 1rem;
+            margin: 1.2rem 0;
+            background: rgba(255, 107, 107, 0.05);
+            border-radius: 0 6px 6px 0;
         }
 
         footer {
-            margin-top: 4rem;
+            margin-top: 5rem;
             text-align: center;
-            padding: 2rem;
+            padding: 2rem 1rem;
             border-top: 1px solid rgba(42, 171, 238, 0.1);
+            color: #888;
+        }
+        .client-alert {
+            margin: 2rem 0;
+            text-align: center;
+            color: #ff9800;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -302,7 +352,7 @@
     <div class="control-bar">
         <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
         <div class="lang-select-wrapper">
-            <select class="lang-select" onchange="changeLang(this.value)">
+            <select class="lang-select" id="langSelect" onchange="changeLang(this.value)">
                 <option value="zh">中文</option>
                 <option value="en">English</option>
                 <option value="ja">日本語</option>
@@ -314,8 +364,8 @@
     <!-- 内容 -->
     <div class="content" style="display: none;">
         <div class="container">
-            <header style="text-align: center; margin: 6rem 0">
-                <h1 style="font-size: 3.5rem; margin-bottom: 1rem" data-translate="title">
+            <header>
+                <h1 data-translate="title">
                     <i class="fas fa-shield-alt"></i> KryptoKernel Pro
                 </h1>
                 <p data-translate="subtitle">下一代企业级加密加速网络</p>
@@ -341,27 +391,27 @@
                         <p data-translate="cloudflare_desc">300+数据中心智能路由</p>
                     </div>
                     <div class="node-card">
-                        <i class="fas fa-computer node-icon"></i>
+                        <i class="fas fa-shield-alt node-icon"></i>
                         <h3 data-translate="ddos">DDOS防护</h3>
                         <p data-translate="ddos_desc">自动识别并拦截大规模攻击流量，峰值防御155Tbps</p>
                     </div>
                     <div class="node-card">
-                        <i class="fas fa-server node-icon"></i>
+                        <i class="fas fa-route node-icon"></i>
                         <h3 data-translate="routing">智能路由</h3>
                         <p data-translate="routing_desc">实时网络质量监测，自动选择最优路径</p>
                     </div>
                     <div class="node-card">
-                        <i class="fas fa-globe-asia node-icon"></i>
+                        <i class="fas fa-globe node-icon"></i>
                         <h3 data-translate="Global">全球覆盖</h3>
                         <p data-translate="Global_desc">节点覆盖全球,让你翱翔全球网络</p>
                     </div>
                     <div class="node-card">
-                        <i class="fas fa-rocket node-icon"></i>
+                        <i class="fas fa-tower-broadcast node-icon"></i>
                         <h3 data-translate="CDN">CDN加速</h3>
                         <p data-translate="CDN_desc">拥有CDN加速节点,使网络延迟大大降低</p>
                     </div>
                     <div class="node-card">
-                        <i class="fas fa-shield-alt node-icon"></i>
+                        <i class="fas fa-code node-icon"></i>
                         <h3 data-translate="code">代码加密</h3>
                         <p data-translate="code_desc">使节点网络永不查封</p>
                     </div>
@@ -378,7 +428,7 @@
                         <p>Ping: 38ms | <span data-translate="broadband">宽带</span>: 500Gbps</p>
                     </div>
                     <div class="node-card">
-                        <i class="fas fa-university node-icon"></i>
+                        <i class="fas fa-building node-icon"></i>
                         <h3 data-translate="de">德国节点</h3>
                         <p>Ping: 58ms | <span data-translate="broadband">宽带</span>: 100Gbps</p>
                     </div>
@@ -388,7 +438,7 @@
                         <p>Ping: 128ms | <span data-translate="broadband">宽带</span>: 85Gbps</p>
                     </div>
                     <div class="node-card">
-                        <i class="fas fa-cheese node-icon"></i>
+                        <i class="fas fa-flag node-icon"></i>
                         <h3 data-translate="fr">法国节点</h3>
                         <p>Ping: 88ms | <span data-translate="broadband">宽带</span>: 70Gbps</p>
                     </div>
@@ -396,7 +446,7 @@
             </section>
 
             <!-- 客户端提示 -->
-            <div class="client-alert" style="margin:2rem 0; text-align:center; color:#ff9800;">
+            <div class="client-alert">
                 <span data-translate="client_notice">⚠️ 建议使用 Clash Meta / V2Ray 客户端</span>
             </div>
 
@@ -405,12 +455,12 @@
                 <h2 class="section-title" data-translate="get_started">立即体验</h2>
                 <div class="link-box">
                     <span data-translate="main_link">正式版链接：</span>
-                    <input type="text" value="*" readonly style="background: none; border: none; color: inherit; width: 70%">
+                    <input type="text" value="联系Xy获取订阅链接 QQ:304765913" readonly>
                     <button class="copy-btn" onclick="copyLink(this)" data-translate="copy">一键复制</button>
                 </div>
                 <div class="link-box">
                     <span data-translate="beta_link">测试版链接：</span>
-                    <input type="text" value="*" readonly style="background: none; border: none; color: inherit; width: 70%">
+                    <input type="text" value="联系Xy获取订阅链接 QQ:304765913" readonly>
                     <button class="copy-btn" onclick="copyLink(this)" data-translate="copy">一键复制</button>
                 </div>
             </section>
@@ -418,18 +468,18 @@
             <!-- 客户端下载 -->
             <section>
                 <h2 class="section-title" data-translate="download">客户端下载</h2>
-                <p><em>安全代理 · 多平台支持 · 一键连接</em></p>
+                <p><em data-translate="safe_desc">安全代理 · 多平台支持 · 一键连接</em></p>
                 <div class="download-section">
-                    <h3>电脑端下载</h3>
-                    <p><strong>支持系统：</strong>Windows / macOS / Linux</p>
+                    <h3 data-translate="pc_download">电脑端下载</h3>
+                    <p><strong data-translate="support_os">支持系统：</strong>Windows / macOS / Linux</p>
                     <p>
                         <a href="https://v2rayn.org/v2rayn-download/" target="_blank">V2rayN官网</a> &middot;
                         <a href="https://github.com/2dust/v2rayN" target="_blank">GitHub仓库</a>
                     </p>
-                    <p class="note">推荐Windows用户使用V2RayN，macOS用户使用V2box</p>
+                    <p class="note" data-translate="pc_note">推荐Windows用户使用V2RayN，macOS用户使用V2box</p>
                 </div>
                 <div class="download-section">
-                    <h3>手机端下载</h3>
+                    <h3 data-translate="mobile_download">手机端下载</h3>
                     <p><strong>Android：</strong>V2RayNG</p>
                     <p><strong>iOS：</strong>V2BOX（外区ID）</p>
                 </div>
@@ -437,31 +487,31 @@
 
             <!-- 配置教程 -->
             <section>
-                <h2 class="section-title">节点订阅配置教程</h2>
+                <h2 class="section-title" data-translate="tutorial">节点订阅配置教程</h2>
                 <div class="card">
-                    <h2>V2box 订阅教程</h2>
-                    <div class="step">打开V2box → 点击右下角 + 按钮</div>
-                    <div class="step">选择 订阅管理 → 添加订阅</div>
-                    <div class="step">输入订阅链接</div>
-                    <div class="step">确定 → 更新节点</div>
+                    <h2 data-translate="v2box_tutorial">V2box 订阅教程</h2>
+                    <div class="step" data-translate="v2box_step1">打开V2box → 点击右下角 + 按钮</div>
+                    <div class="step" data-translate="v2box_step2">选择 订阅管理 → 添加订阅</div>
+                    <div class="step" data-translate="v2box_step3">输入订阅链接</div>
+                    <div class="step" data-translate="v2box_step4">确定 → 更新节点</div>
                 </div>
                 <div class="card">
-                    <h2>V2rayN 订阅教程</h2>
-                    <div class="step">订阅 → 订阅设置 → 添加</div>
-                    <div class="step">粘贴链接 → 确定</div>
-                    <div class="step">更新订阅 → 选择节点连接</div>
+                    <h2 data-translate="v2rayn_tutorial">V2rayN 订阅教程</h2>
+                    <div class="step" data-translate="v2rayn_step1">订阅 → 订阅设置 → 添加</div>
+                    <div class="step" data-translate="v2rayn_step2">粘贴链接 → 确定</div>
+                    <div class="step" data-translate="v2rayn_step3">更新订阅 → 选择节点连接</div>
                 </div>
             </section>
         </div>
 
         <!-- 底部 -->
         <footer>
-            © 2025 Designed by <a href="https://148668.xyz">xy</a>
+            © 2025 Designed by <a href="https://bcian.cn">导航页</a>
         </footer>
     </div>
 
     <script>
-        // 多语言
+        // 完整多语言包
         const translations = {
             zh: {
                 loading:"正在加载...",title:"KryptoKernel Pro",subtitle:"下一代企业级加密加速网络",features:"核心优势",
@@ -470,67 +520,118 @@
                 cloudflare:"Cloudflare 加持",cloudflare_desc:"300+数据中心智能路由",
                 ddos:"DDOS防护",ddos_desc:"自动识别拦截攻击，峰值防御155Tbps",
                 routing:"智能路由",routing_desc:"实时监测，自动选路",
-                Global:"全球覆盖",Global_desc:"节点覆盖全球",
-                CDN:"CDN加速",CDN_desc:"降低网络延迟",
-                code:"代码加密",code_desc:"节点防查封",
+                Global:"全球覆盖",Global_desc:"节点覆盖全球，畅享全球网络",
+                CDN:"CDN加速",CDN_desc:"全球加速节点，大幅降低延迟",
+                code:"代码加密",code_desc:"底层加密，节点防查封",
                 nodes:"全球节点",hk:"香港节点",de:"德国节点",us:"美国节点",fr:"法国节点",
-                broadband:"宽带",client_notice:"⚠️ 建议使用 Clash Meta / V2Ray 客户端",
+                broadband:"带宽",client_notice:"⚠️ 建议使用 Clash Meta / V2Ray 客户端",
                 get_started:"立即体验",main_link:"正式版链接",beta_link:"测试版链接",
-                copy:"一键复制",copied:"已复制",download:"客户端下载"
+                copy:"一键复制",copied:"已复制",download:"客户端下载",safe_desc:"安全代理 · 多平台支持 · 一键连接",
+                pc_download:"电脑端下载",support_os:"支持系统",pc_note:"推荐Windows使用V2RayN，macOS使用V2box",
+                mobile_download:"手机端下载",tutorial:"配置教程",v2box_tutorial:"V2box 订阅教程",
+                v2box_step1:"打开V2box → 点击右下角 + 按钮",v2box_step2:"选择 订阅管理 → 添加订阅",
+                v2box_step3:"输入订阅链接",v2box_step4:"确定 → 更新节点",
+                v2rayn_tutorial:"V2rayN 订阅教程",v2rayn_step1:"订阅 → 订阅设置 → 添加",
+                v2rayn_step2:"粘贴链接 → 确定",v2rayn_step3:"更新订阅 → 选择节点连接"
             },
             en: {
-                loading:"Loading...",title:"KryptoKernel Pro",subtitle:"Next-Gen Encrypted Network",features:"Core Features",
-                encryption:"Military-Grade Encryption",encryption_desc:"AES-256-GCM + ChaCha20-Poly1305",
-                speed:"Ultra-Fast",speed_desc:"Global Anycast",cloudflare:"Cloudflare Powered",
-                ddos:"DDoS Protection",routing:"Smart Routing",Global:"Global Coverage",CDN:"CDN Accelerate",
-                code:"Code Encryption",nodes:"Global Nodes",hk:"Hong Kong",de:"Germany",us:"USA",fr:"France",
-                broadband:"broadband",client_notice:"⚠️ Use Clash Meta/V2Ray",
-                get_started:"Get Started",main_link:"Production",beta_link:"Beta",copy:"Copy",copied:"Copied",download:"Download"
+                loading:"Loading...",title:"KryptoKernel Pro",subtitle:"Next-Gen Enterprise Encrypted Network",features:"Core Features",
+                encryption:"Military-Grade Encryption",encryption_desc:"AES-256-GCM + ChaCha20-Poly1305 Dual Encryption",
+                speed:"Ultra-Fast Network",speed_desc:"Global Anycast Acceleration, 80% Lower Latency",
+                cloudflare:"Cloudflare Powered",cloudflare_desc:"300+ Data Centers Smart Routing",
+                ddos:"DDoS Protection",ddos_desc:"Auto Block Attacks, 155Tbps Max Defense",
+                routing:"Smart Routing",routing_desc:"Real-time Monitoring, Auto Path Selection",
+                Global:"Global Coverage",Global_desc:"Global Nodes, Smooth Network Access",
+                CDN:"CDN Acceleration",CDN_desc:"Global Edge Nodes, Low Latency",
+                code:"Code Encryption",code_desc:"Anti-Ban Technology",
+                nodes:"Global Nodes",hk:"Hong Kong",de:"Germany",us:"USA",fr:"France",
+                broadband:"Bandwidth",client_notice:"⚠️ Recommended: Clash Meta / V2Ray",
+                get_started:"Get Started",main_link:"Production Link",beta_link:"Beta Link",
+                copy:"Copy",copied:"Copied",download:"Client Download",safe_desc:"Secure Proxy · Cross Platform · One Click Connect",
+                pc_download:"PC Download",support_os:"Support OS",pc_note:"Windows: V2RayN, macOS: V2box",
+                mobile_download:"Mobile Download",tutorial:"Setup Tutorial",v2box_tutorial:"V2box Tutorial",
+                v2box_step1:"Open V2box → Tap + Button",v2box_step2:"Subscription → Add Subscription",
+                v2box_step3:"Paste Link",v2box_step4:"Confirm → Update Nodes",
+                v2rayn_tutorial:"V2rayN Tutorial",v2rayn_step1:"Subscriptions → Settings → Add",
+                v2rayn_step2:"Paste Link → OK",v2rayn_step3:"Update Sub → Connect"
             },
-            ja: {loading:"読み込み中...",title:"KryptoKernel Pro",copy:"コピー",copied:"コピー完了"},
-            ru: {loading:"Загрузка...",title:"KryptoKernel Pro",copy:"Копировать",copied:"Скопировано"}
+            ja: {
+                loading:"読み込み中...",title:"KryptoKernel Pro",subtitle:"次世代エンタープライズ暗号化ネットワーク",
+                copy:"コピー",copied:"コピー完了",features:"コア機能",nodes:"グローバルノード",
+                download:"クライアントダウンロード",tutorial:"設定チュートリアル"
+            },
+            ru: {
+                loading:"Загрузка...",title:"KryptoKernel Pro",subtitle:"Шифрованная сеть нового поколения",
+                copy:"Копировать",copied:"Скопировано",features:"Основные функции",nodes:"Глобальные узлы",
+                download:"Скачать клиент",tutorial:"Инструкция"
+            }
         };
 
         // 加载动画
         window.addEventListener('load', () => {
             setTimeout(()=>{
-                document.getElementById('preloader').style.opacity = '0';
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
                 setTimeout(()=>{
-                    document.getElementById('preloader').style.display = 'none';
                     document.querySelector('.content').style.display = 'block';
-                },500);
+                },400);
             },800);
         });
 
         // 主题切换
         function toggleTheme() {
-            const t = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-            document.documentElement.dataset.theme = t;
-            localStorage.setItem('theme', t);
+            const current = document.documentElement.dataset.theme;
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.dataset.theme = newTheme;
+            localStorage.setItem('theme', newTheme);
         }
 
         // 语言切换
         function changeLang(lang) {
             document.documentElement.dataset.lang = lang;
+            document.getElementById('langSelect').value = lang;
+            localStorage.setItem('lang', lang);
+            
             document.querySelectorAll('[data-translate]').forEach(el => {
-                const k = el.dataset.translate;
-                if(translations[lang][k]) el.textContent = translations[lang][k];
+                const key = el.dataset.translate;
+                if(translations[lang] && translations[lang][key]){
+                    el.textContent = translations[lang][key];
+                }
             });
         }
 
-        // 复制
+        // 复制功能（增强版）
         function copyLink(btn) {
-            const text = btn.previousElementSibling.value;
-            navigator.clipboard.writeText(text).then(()=>{
-                const lang = document.documentElement.dataset.lang;
-                btn.innerHTML = '<i class="fas fa-check"></i> ' + translations[lang].copied;
-                setTimeout(()=>{btn.textContent = translations[lang].copy;},2000);
-            });
+            try {
+                const input = btn.previousElementSibling;
+                const text = input.value || input.innerText;
+                
+                navigator.clipboard.writeText(text).then(()=>{
+                    const lang = document.documentElement.dataset.lang || 'zh';
+                    const original = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> ' + translations[lang].copied;
+                    
+                    setTimeout(()=>{
+                        btn.innerHTML = translations[lang].copy;
+                    },2000);
+                }).catch(err=>{
+                    console.error('复制失败:',err);
+                    alert('复制失败，请手动复制');
+                });
+            } catch(e){
+                alert('复制异常');
+            }
         }
 
-        // 初始化
-        document.documentElement.dataset.theme = localStorage.getItem('theme') || 'dark';
-        changeLang('zh');
+        // 初始化（读取本地存储）
+        document.addEventListener('DOMContentLoaded',()=>{
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedLang = localStorage.getItem('lang') || 'zh';
+            
+            document.documentElement.dataset.theme = savedTheme;
+            changeLang(savedLang);
+        });
     </script>
 </body>
 </html>
