@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>KuDog 云视在线直播 · 全频道</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0f1e;
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            color: #eef2ff;
+            padding: 20px 24px 40px;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #FFFFFF, #86b6ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .header p {
+            color: #9aa4bf;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .player-section {
+            background: #000000;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+            margin-bottom: 32px;
+        }
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+            aspect-ratio: 16 / 9;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+            display: block;
+        }
+        .player-info {
+            background: rgba(10, 15, 30, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .current-channel {
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .current-channel .tag {
+            background: #e11d48;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: white;
+        }
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(225, 29, 72, 0.2);
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            color: #ff9fae;
+        }
+        .live-badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: #e11d48;
+            border-radius: 50%;
+            animation: pulse 1.2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.8);}
+            100% { opacity: 1; transform: scale(1.2);}
+        }
+
+        /* 动态分类 tabs 容器 */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 12px;
+            max-height: 110px;
+            overflow-y: auto;
+            align-items: center;
+        }
+        .tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 18px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #b9c3e6;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: 0.2s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .tab-btn.active {
+            background: #2d3a5e;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .tab-btn:hover:not(.active) {
+            background: #1f2a44;
+            color: #eef2ff;
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(118px, 132px));
+            gap: 14px;
+            justify-content: start;
+            max-height: 540px;
+            overflow-y: auto;
+            padding: 8px 4px 20px 4px;
+        }
+        .channels-grid::-webkit-scrollbar {
+            width: 5px;
+        }
+        .channels-grid::-webkit-scrollbar-track {
+            background: #141b2b;
+            border-radius: 10px;
+        }
+        .channels-grid::-webkit-scrollbar-thumb {
+            background: #3e4a6b;
+            border-radius: 10px;
+        }
+
+        .channel-card {
+            background: #111827;
+            border-radius: 20px;
+            padding: 12px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .channel-card:hover {
+            background: #1f2a48;
+            transform: translateY(-3px);
+        }
+        .channel-card.active-channel {
+            background: linear-gradient(145deg, #1e2b4a, #14203a);
+            border-left: 3px solid #3b82f6;
+        }
+        .channel-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+        }
+        .channel-type {
+            font-size: 0.62rem;
+            color: #9aabc9;
+            margin-top: 6px;
+            background: #1e2a3a;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .loading-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            color: white;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            z-index: 1000;
+            transition: opacity 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .empty-tip {
+            text-align: center;
+            padding: 40px;
+            color: #6c7a9e;
+        }
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 0.7rem;
+            color: #4a5679;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+        }
+        @media (max-width: 720px) {
+            body { padding: 16px 12px 30px; }
+            .channels-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 110px)); gap: 10px; }
+            .channel-name { font-size: 0.75rem; }
+            .tab-btn { padding: 5px 14px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>Kudog 云视在线直播 · 全频道</h1>
+        <p>央视 · 卫视 · 4K超高清 | 海量资源秒播</p>
+    </div>
+
+    <div class="player-section">
+        <div class="video-wrapper">
+            <video id="liveVideo" controls autoplay muted playsinline preload="auto"></video>
+        </div>
+        <div class="player-info">
+            <div class="current-channel">
+                <span class="tag">LIVE</span>
+                <span id="currentChannelName">加载中...</span>
+            </div>
+            <div class="live-badge">正在直播</div>
+        </div>
+    </div>
+
+    <!-- 动态分类选项卡容器 -->
+    <div id="tabsContainer" class="tabs"></div>
+
+    <div id="channelsContainer" class="channels-grid"></div>
+    <footer>✨ 点击任意频道自动跳转分类 | 高清直播源实时同步</footer>
+</div>
+<div id="loadingToast" class="loading-toast" style="opacity:0;">切换频道中...</div>
+
+<script>
+    // ======================= 原始频道数据（完整解析）========================
+    // 基于用户提供的完整M3U8列表 (从央视频道到购物频道)
+    const rawText = `央视频道,#genre#
+CCTV-1 综合,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225618/index.m3u8
+CCTV-1 综合,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225642/index.m3u8
+CCTV-1 综合,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226221/index.m3u8
+CCTV-1 综合,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226225/index.m3u8
+CCTV-1 综合,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225501/index.m3u8?fmt=ts2hls
+CCTV-2 财经,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225643/index.m3u8
+CCTV-2 财经,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225619/index.m3u8
+CCTV-2 财经,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226254/index.m3u8
+CCTV-2 财经,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225500/index.m3u8?fmt=ts2hls
+CCTV-3 综艺,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225634/index.m3u8
+CCTV-3 综艺,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225647/index.m3u8
+CCTV-3 综艺,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226256/index.m3u8?fmt=ts2hls
+CCTV-4 中文国际,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225621/index.m3u8
+CCTV-4 中文国际,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226277/index.m3u8
+CCTV-4 中文国际,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226340/index.m3u8
+CCTV-4 中文国际,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226348/index.m3u8?fmt=ts2hls
+CCTV-4 欧洲,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226361/index.m3u8?fmt=ts2hls
+CCTV-4 美洲,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226366/index.m3u8?fmt=ts2hls
+CCTV-5 体育,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225633/index.m3u8
+CCTV-5 体育,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225648/index.m3u8
+CCTV-5 体育,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226259/index.m3u8?fmt=ts2hls
+CCTV-5 + 体育赛事,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225649/index.m3u8
+CCTV-5 + 体育赛事,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225706/index.m3u8
+CCTV-5 + 体育赛事,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226354/index.m3u8?fmt=ts2hls
+CCTV-6 电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225632/index.m3u8
+CCTV-6 电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225650/index.m3u8
+CCTV-6 电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226255/index.m3u8?fmt=ts2hls
+CCTV-7 国防军事,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225624/index.m3u8
+CCTV-7 国防军事,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225644/index.m3u8
+CCTV-7 国防军事,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226280/index.m3u8
+CCTV-7 国防军事,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225499/index.m3u8?fmt=ts2hls
+CCTV-8 电视剧,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225631/index.m3u8
+CCTV-8 电视剧,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225635/index.m3u8
+CCTV-8 电视剧,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226258/index.m3u8?fmt=ts2hls
+CCTV-9 纪录,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225626/index.m3u8
+CCTV-9 纪录,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225646/index.m3u8
+CCTV-9 纪录,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226257/index.m3u8
+CCTV-9 纪录,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226357/index.m3u8?fmt=ts2hls
+CCTV-10 科教,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225627/index.m3u8
+CCTV-10 科教,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225636/index.m3u8
+CCTV-10 科教,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226264/index.m3u8
+CCTV-10 科教,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225496/index.m3u8?fmt=ts2hls
+CCTV-11 戏曲,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225628/index.m3u8
+CCTV-11 戏曲,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226283/index.m3u8
+CCTV-11 戏曲,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226320/index.m3u8
+CCTV-11 戏曲,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226349/index.m3u8?fmt=ts2hls
+CCTV-12 社会与法,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225629/index.m3u8
+CCTV-12 社会与法,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225637/index.m3u8
+CCTV-12 社会与法,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226267/index.m3u8
+CCTV-12 社会与法,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225495/index.m3u8?fmt=ts2hls
+CCTV-13 新闻,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225638/index.m3u8
+CCTV-13 新闻,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226286/index.m3u8
+CCTV-13 新闻,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226343/index.m3u8
+CCTV-13 新闻,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226329/index.m3u8?fmt=ts2hls
+CCTV-14 少儿,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225639/index.m3u8
+CCTV-14 少儿,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225640/index.m3u8
+CCTV-14 少儿,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226289/index.m3u8
+CCTV-14 少儿,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225494/index.m3u8?fmt=ts2hls
+CCTV-15 音乐,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225641/index.m3u8
+CCTV-15 音乐,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226342/index.m3u8
+CCTV-15 音乐,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226332/index.m3u8?fmt=ts2hls
+CCTV-16 奥林匹克,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226230/index.m3u8
+CCTV-16 奥林匹克,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226233/index.m3u8
+CCTV-17 农业农村,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225907/index.m3u8
+CCTV-17 农业农村,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225908/index.m3u8
+CCTV-17 农业农村,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225909/index.m3u8
+CCTV-17 农业农村,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226270/index.m3u8
+CCTV-17 农业农村,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226345/index.m3u8
+CCTV-17 农业农村,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226335/index.m3u8?fmt=ts2hls
+卫视频道,#genre#
+湖南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225704/index.m3u8
+湖南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225745/index.m3u8
+湖南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225490/index.m3u8?fmt=ts2hls
+江苏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225702/index.m3u8
+江苏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225743/index.m3u8
+江苏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225488/index.m3u8?fmt=ts2hls
+浙江卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225744/index.m3u8
+浙江卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225703/index.m3u8
+浙江卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225491/index.m3u8?fmt=ts2hls
+东方卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225658/index.m3u8
+东方卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225659/index.m3u8
+东方卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225489/index.m3u8?fmt=ts2hls
+北京卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225673/index.m3u8
+北京卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225674/index.m3u8
+北京卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225600/index.m3u8?fmt=ts2hls
+广东卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225701/index.m3u8
+广东卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225742/index.m3u8
+广东卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225597/index.m3u8?fmt=ts2hls
+深圳卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225700/index.m3u8
+深圳卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225741/index.m3u8
+深圳卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225598/index.m3u8?fmt=ts2hls
+江西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225705/index.m3u8
+江西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225746/index.m3u8
+江西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225492/index.m3u8?fmt=ts2hls
+安徽卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225691/index.m3u8
+安徽卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225737/index.m3u8
+安徽卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226352/index.m3u8?fmt=ts2hls
+天津卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225698/index.m3u8
+天津卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225739/index.m3u8
+天津卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225485/index.m3u8?fmt=ts2hls
+四川卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225733/index.m3u8
+四川卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225487/index.m3u8?fmt=ts2hls
+山东卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225738/index.m3u8
+山东卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225697/index.m3u8
+山东卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225484/index.m3u8?fmt=ts2hls
+东南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225657/index.m3u8
+东南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226326/index.m3u8
+东南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225585/index.m3u8?fmt=ts2hls
+云南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225664/index.m3u8
+云南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226351/index.m3u8?fmt=ts2hls
+贵州卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225728/index.m3u8
+贵州卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225483/index.m3u8?fmt=ts2hls
+吉林卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225680/index.m3u8
+吉林卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226355/index.m3u8?fmt=ts2hls
+黑龙江卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225690/index.m3u8
+黑龙江卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225736/index.m3u8
+黑龙江卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225586/index.m3u8?fmt=ts2hls
+重庆卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225692/index.m3u8
+重庆卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225734/index.m3u8
+重庆卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225612/index.m3u8?fmt=ts2hls
+辽宁卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225735/index.m3u8
+辽宁卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225696/index.m3u8
+辽宁卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225601/index.m3u8?fmt=ts2hls
+湖北卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225699/index.m3u8
+湖北卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225740/index.m3u8
+湖北卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225596/index.m3u8?fmt=ts2hls
+海南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225722/index.m3u8
+海南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226212/index.m3u8?fmt=ts2hls
+海南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226413/index.m3u8?fmt=ts2hls
+内蒙古卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225667/index.m3u8
+内蒙古卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225533/index.m3u8?fmt=ts2hls
+西藏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225723/index.m3u8
+西藏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225562/index.m3u8?fmt=ts2hls
+西藏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226392/index.m3u8?fmt=ts2hls
+甘肃卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225724/index.m3u8
+甘肃卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226358/index.m3u8?fmt=ts2hls
+新疆卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225725/index.m3u8
+新疆卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225534/index.m3u8?fmt=ts2hls
+新疆卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226418/index.m3u8?fmt=ts2hls
+宁夏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225726/index.m3u8
+宁夏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225535/index.m3u8?fmt=ts2hls
+宁夏卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226426/index.m3u8?fmt=ts2hls
+青海卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225727/index.m3u8
+青海卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225546/index.m3u8?fmt=ts2hls
+陕西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225729/index.m3u8
+陕西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225531/index.m3u8?fmt=ts2hls
+山西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225730/index.m3u8
+山西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225549/index.m3u8?fmt=ts2hls
+广西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225731/index.m3u8
+广西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226211/index.m3u8?fmt=ts2hls
+河南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226196/index.m3u8
+河南卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225611/index.m3u8?fmt=ts2hls
+河北卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225610/index.m3u8?fmt=ts2hls
+河北卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225732/index.m3u8
+厦门卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226199/index.m3u8
+厦门卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226375/index.m3u8?fmt=ts2hls
+兵团卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226200/index.m3u8
+兵团卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225530/index.m3u8?fmt=ts2hls
+兵团卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226395/index.m3u8?fmt=ts2hls
+农林卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226204/index.m3u8
+康巴卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226263/index.m3u8
+三沙卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226356/index.m3u8?fmt=ts2hls
+江西频道,#genre#
+江西卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225492/index.m3u8?fmt=ts2hls
+江西都市,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225584/index.m3u8?fmt=ts2hls
+江西经济·生活,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226206/index.m3u8?fmt=ts2hls
+江西经济·生活,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226432/index.m3u8?fmt=ts2hls
+江西公共·农业,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225578/index.m3u8?fmt=ts2hls
+江西少儿,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226194/index.m3u8?fmt=ts2hls
+江西新闻,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225615/index.m3u8?fmt=ts2hls
+江西移动电视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226427/index.m3u8?fmt=ts2hls
+江西教育,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226197/index.m3u8?fmt=ts2hls
+江西教育,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226410/index.m3u8?fmt=ts2hls
+中国陶瓷,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226304/index.m3u8?fmt=ts2hls
+江西IPTV,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226376/index.m3u8?fmt=ts2hls
+江西IPTV,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226381/index.m3u8?fmt=ts2hls
+江西IPTV,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226389/index.m3u8?fmt=ts2hls
+江西IPTV,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226414/index.m3u8?fmt=ts2hls
+南昌新闻综合,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226382/index.m3u8?fmt=ts2hls
+南昌都市,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226385/index.m3u8?fmt=ts2hls
+南昌资讯,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226374/index.m3u8?fmt=ts2hls
+上饶新闻综合,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226419/index.m3u8?fmt=ts2hls
+上饶经济旅游,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226416/index.m3u8?fmt=ts2hls
+赣州新闻综合,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226408/index.m3u8?fmt=ts2hls
+赣州公共,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226412/index.m3u8?fmt=ts2hls
+九江新闻综合频道,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226417/index.m3u8?fmt=ts2hls
+九江公共频道,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226420/index.m3u8?fmt=ts2hls
+九江教育频道,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226423/index.m3u8?fmt=ts2hls
+央视精品频道,#genre#
+CHC影迷电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226305/index.m3u8?fmt=ts2hls
+CHC动作电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226308/index.m3u8?fmt=ts2hls
+CHC家庭影院,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226319/index.m3u8?fmt=ts2hls
+CCTV-第一剧场,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226284/index.m3u8?fmt=ts2hls
+CCTV-风云音乐,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226287/index.m3u8?fmt=ts2hls
+CCTV-世界地理,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226290/index.m3u8?fmt=ts2hls
+CCTV-女性时尚,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226293/index.m3u8?fmt=ts2hls
+CCTV-央视文化精品,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226296/index.m3u8?fmt=ts2hls
+CCTV-高尔夫网球,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226299/index.m3u8?fmt=ts2hls
+CCTV-风云足球,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226302/index.m3u8?fmt=ts2hls
+CCTV-风云剧场,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226315/index.m3u8?fmt=ts2hls
+CCTV-怀旧剧场,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226318/index.m3u8?fmt=ts2hls
+CCTV-兵器科技,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226321/index.m3u8?fmt=ts2hls
+CCTV-世界地理,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226292/index.m3u8
+CCTV-央视台球,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226339/index.m3u8?fmt=ts2hls
+CCTV-电视指南,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226359/index.m3u8?fmt=ts2hls
+卫视4K超频道,#genre#
+湖南卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226398/index.m3u8?fmt=ts2hls
+江苏卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226401/index.m3u8?fmt=ts2hls
+浙江卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226404/index.m3u8?fmt=ts2hls
+广东卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226405/index.m3u8?fmt=ts2hls
+东方卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226429/index.m3u8?fmt=ts2hls
+四川卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226424/index.m3u8?fmt=ts2hls
+山东卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226407/index.m3u8?fmt=ts2hls
+深圳卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226409/index.m3u8?fmt=ts2hls
+北京卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226386/index.m3u8?fmt=ts2hls
+北京卫视4K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226394/index.m3u8
+CCTV-164K超,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226236/index.m3u8?fmt=ts2hls
+CCTV4K,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226422/index.m3u8
+CCTV4K,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226444/index.m3u8
+纯享4K超高清,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225786/index.m3u8
+NewTV,#genre#
+超级综艺,,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225620/index.m3u8
+超级综艺,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225768/index.m3u8
+超级体育,,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225622/index.m3u8
+超级体育,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225767/index.m3u8
+超级电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225623/index.m3u8
+超级电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225766/index.m3u8
+超级电视剧,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225625/index.m3u8
+超级电视剧,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225765/index.m3u8
+哒啵赛事,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225653/index.m3u8
+中国功夫,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225660/index.m3u8
+怡伴健康,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225666/index.m3u8
+军旅剧场,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225669/index.m3u8
+农业致富,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225670/index.m3u8
+黑莓动画,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225672/index.m3u8
+古装剧场,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225678/index.m3u8
+炫舞未来,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225707/index.m3u8
+潮妈辣婆,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225708/index.m3u8
+精品体育,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225709/index.m3u8
+金牌综艺,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225711/index.m3u8
+家庭剧场,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225713/index.m3u8
+精品大剧,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225714/index.m3u8
+军事评论,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225757/index.m3u8
+黑莓电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225764/index.m3u8
+黑莓电影,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225769/index.m3u8
+海外剧场,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225716/index.m3u8
+东北热剧,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226202/index.m3u8
+欢乐剧场,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226210/index.m3u8
+精品萌宠,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226245/index.m3u8
+哒啵电竞,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226265/index.m3u8
+咪咕频道,#genre#
+睛彩篮球,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226240/index.m3u8
+睛彩竞技,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226243/index.m3u8
+睛彩青少,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226261/index.m3u8
+睛彩广场舞,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226391/index.m3u8
+睛彩青少,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226380/index.m3u8?fmt=ts2hls
+睛彩广场舞,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226383/index.m3u8?fmt=ts2hls
+睛彩竞技,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226400/index.m3u8?fmt=ts2hls
+睛彩篮球,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226403/index.m3u8?fmt=ts2hls
+港澳频道,#genre#
+凤凰中文,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226248/index.m3u8
+凤凰香港,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226251/index.m3u8
+凤凰资讯,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226274/index.m3u8
+动漫频道,#genre#
+金鹰卡通,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225721/index.m3u8
+金鹰卡通,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225554/index.m3u8?fmt=ts2hls
+金鹰卡通,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226246/index.m3u8?fmt=ts2hls
+优漫卡通,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225665/index.m3u8
+卡酷少儿,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225677/index.m3u8
+卡酷少儿,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226362/index.m3u8?fmt=ts2hls
+嘉佳卡通,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226193/index.m3u8
+新动漫,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226322/index.m3u8?fmt=ts2hls
+优优宝贝,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226312/index.m3u8?fmt=ts2hls
+特色频道,#genre#
+中国天气,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226334/index.m3u8?fmt=ts2hls
+纪实科教,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225675/index.m3u8
+纪实科教,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225676/index.m3u8
+金鹰纪实,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226198/index.m3u8
+国学频道,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226384/index.m3u8
+汽摩,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225506/index.m3u8?fmt=ts2hls
+武术世界,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225508/index.m3u8?fmt=ts2hls
+梨园频道,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225581/index.m3u8?fmt=ts2hls
+金鹰纪实,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225595/index.m3u8?fmt=ts2hls
+快乐垂钓,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225780/index.m3u8?fmt=ts2hls
+四海钓鱼,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226330/index.m3u8?fmt=ts2hls
+茶频道,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225781/index.m3u8?fmt=ts2hls
+环球旅游,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226313/index.m3u8?fmt=ts2hls
+生态环境,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226325/index.m3u8?fmt=ts2hls
+文物宝库,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226328/index.m3u8?fmt=ts2hls
+财富天下,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226336/index.m3u8?fmt=ts2hls
+国学频道,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226338/index.m3u8?fmt=ts2hls
+纪实科教,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226365/index.m3u8?fmt=ts2hls
+书画频道,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226370/index.m3u8?fmt=ts2hls
+环球奇观,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226378/index.m3u8?fmt=ts2hls
+央视外语频道,#genre#
+CGTN纪录,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225645/index.m3u8
+CGTN纪录,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226260/index.m3u8
+CGTN纪录,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226341/index.m3u8?fmt=ts2hls
+CGTN西班牙语,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226273/index.m3u8
+CGTN西班牙语,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226372/index.m3u8?fmt=ts2hls
+CGTN法语,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226276/index.m3u8
+CGTN阿拉伯语,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226279/index.m3u8
+CGTN阿拉伯语,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226364/index.m3u8?fmt=ts2hls
+CGTN俄语,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226282/index.m3u8
+CGTN俄语,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226367/index.m3u8?fmt=ts2hls
+CGTN法语,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226344/index.m3u8?fmt=ts2hls
+CGTN,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225747/index.m3u8
+CGTN,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226347/index.m3u8?fmt=ts2hls
+CGTN,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226369/index.m3u8?fmt=ts2hls
+央视教育频道,#genre#
+CETV-1,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225661/index.m3u8
+CETV-1,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225563/index.m3u8?fmt=ts2hls
+CETV-1,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225917/index.m3u8?fmt=ts2hls
+CETV-2,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226242/index.m3u8
+CETV-2,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226350/index.m3u8?fmt=ts2hls
+CETV-4,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225937/index.m3u8
+CETV-4,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225969/index.m3u8?fmt=ts2hls
+山东教育卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226353/index.m3u8?fmt=ts2hls
+山东教育卫视,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225719/index.m3u8
+新华社频道,#genre#
+新华社,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226297/index.m3u8
+新华全球连线,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226298/index.m3u8
+购物频道,#genre#
+央广购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225970/index.m3u8
+央广购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225971/index.m3u8
+聚鲨环球精选,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225972/index.m3u8
+优购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225973/index.m3u8
+央广购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225974/index.m3u8
+优购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226190/index.m3u8
+优购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226219/index.m3u8
+风尚购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225975/index.m3u8
+风尚购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221226239/index.m3u8?fmt=ts2hls
+中视购物,http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225976/index.m3u8`;
+
+    // ---------- 智能解析文本频道 ----------
+    function parseM3UList(text) {
+        const lines = text.split(/\r?\n/);
+        let currentCategory = "未分类";
+        const channelsMap = new Map(); // key: category|name, value: channel obj
+        const categoryOrder = [];
+
+        for (let line of lines) {
+            line = line.trim();
+            if (line === "") continue;
+            // 分类标记行: 名称,#genre#
+            if (line.includes("#genre#")) {
+                const catName = line.split(",")[0].trim();
+                if (catName && !categoryOrder.includes(catName)) {
+                    categoryOrder.push(catName);
+                }
+                currentCategory = catName;
+                continue;
+            }
+            // 普通频道行: 处理可能包含逗号的url, 取第一个逗号分割
+            const firstCommaIdx = line.indexOf(',');
+            if (firstCommaIdx === -1) continue;
+            let rawName = line.substring(0, firstCommaIdx).trim();
+            let url = line.substring(firstCommaIdx + 1).trim();
+            if (!url || url === "") continue;
+            // 处理特殊情况 "超级综艺,,http://..." 导致 rawName 后面带逗号空? 上面已经截取正确, 不需要额外操作
+            let channelName = rawName;
+            // 去重: 同分类下相同频道名只保留第一个有效url
+            const mapKey = `${currentCategory}|${channelName}`;
+            if (!channelsMap.has(mapKey)) {
+                channelsMap.set(mapKey, {
+                    name: channelName,
+                    category: currentCategory,
+                    url: url
+                });
+            }
+        }
+        const channels = Array.from(channelsMap.values());
+        return { channels, categories: categoryOrder };
+    }
+
+    const { channels: allChannels, categories: categoryList } = parseM3UList(rawText);
+    console.log(`加载成功,共 ${allChannels.length} 个频道,分类数: ${categoryList.length}`);
+
+    // DOM 元素
+    const videoPlayer = document.getElementById('liveVideo');
+    const currentChannelNameSpan = document.getElementById('currentChannelName');
+    const channelsContainer = document.getElementById('channelsContainer');
+    const tabsContainer = document.getElementById('tabsContainer');
+    const loadingToast = document.getElementById('loadingToast');
+    
+    let activeCategory = categoryList.length > 0 ? categoryList[0] : "央视频道";
+    let currentChannel = null;
+    let toastTimeout = null;
+
+    // 分类短名映射 (用于卡片标签)
+    function getShortCatName(catFull) {
+        const map = {
+            "央视频道": "央视", "卫视频道": "卫视", "江西频道": "江西", "央视精品频道": "精品",
+            "卫视4K超频道": "4K超", "NewTV": "NewTV", "咪咕频道": "咪咕", "港澳频道": "港澳",
+            "动漫频道": "动漫", "特色频道": "特色", "央视外语频道": "外语", "央视教育频道": "教育",
+            "新华社频道": "新华社", "购物频道": "购物"
+        };
+        return map[catFull] || catFull.slice(0, 4);
+    }
+
+    function showLoadingToast(msg, autoHide = true) {
+        if (loadingToast) {
+            loadingToast.innerText = msg;
+            loadingToast.style.opacity = '1';
+            if (toastTimeout) clearTimeout(toastTimeout);
+            if (autoHide) toastTimeout = setTimeout(() => { if (loadingToast) loadingToast.style.opacity = '0'; }, 1800);
+        }
+    }
+    function hideLoadingToast() { if (loadingToast) loadingToast.style.opacity = '0'; if (toastTimeout) clearTimeout(toastTimeout); }
+
+    // 核心：切换频道（并自动跳转分类tab）
+    function switchChannel(channel) {
+        if (!channel || !channel.url) return;
+        if (currentChannel && currentChannel.name === channel.name && currentChannel.url === channel.url && videoPlayer.src === channel.url) return;
+        
+        showLoadingToast(`加载 ${channel.name} ...`);
+        currentChannel = channel;
+        currentChannelNameSpan.innerText = channel.name;
+        
+        // 自动切换tab到该频道所在分类
+        if (activeCategory !== channel.category) {
+            setActiveCategory(channel.category);
+        }
+        
+        videoPlayer.pause();
+        videoPlayer.src = '';
+        videoPlayer.src = channel.url;
+        videoPlayer.load();
+        videoPlayer.play().catch(e => {
+            console.warn("自动播放被阻止,需用户交互", e);
+            showLoadingToast(`点击播放器即可播放 ${channel.name}`, true);
+        });
+        renderChannelsList(); // 刷新高亮
+        
+        videoPlayer.onerror = () => showLoadingToast(`频道 ${channel.name} 源可能失效,尝试切换`, true);
+        videoPlayer.oncanplay = () => hideLoadingToast();
+    }
+
+    // 渲染当前分类的频道列表
+    function renderChannelsList() {
+        const channelsInCat = allChannels.filter(ch => ch.category === activeCategory);
+        if (!channelsContainer) return;
+        if (channelsInCat.length === 0) {
+            channelsContainer.innerHTML = '<div class="empty-tip">📡 暂无频道数据</div>';
+            return;
+        }
+        const fragment = document.createDocumentFragment();
+        channelsInCat.forEach(ch => {
+            const card = document.createElement('div');
+            card.className = 'channel-card';
+            if (currentChannel && currentChannel.name === ch.name && currentChannel.category === ch.category) {
+                card.classList.add('active-channel');
+            }
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'channel-name';
+            nameSpan.innerText = ch.name;
+            const typeSpan = document.createElement('div');
+            typeSpan.className = 'channel-type';
+            typeSpan.innerText = getShortCatName(ch.category);
+            card.appendChild(nameSpan);
+            card.appendChild(typeSpan);
+            card.addEventListener('click', (e) => { e.stopPropagation(); switchChannel(ch); });
+            fragment.appendChild(card);
+        });
+        channelsContainer.innerHTML = '';
+        channelsContainer.appendChild(fragment);
+    }
+
+    // 设置激活分类 + 重绘tab + 重绘频道列表
+    function setActiveCategory(category) {
+        activeCategory = category;
+        // 更新 tab 按钮样式
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            if (btn.getAttribute('data-cat') === category) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        renderChannelsList();
+    }
+
+    // 动态构建顶部分类选项卡
+    function buildTabs() {
+        if (!tabsContainer) return;
+        tabsContainer.innerHTML = '';
+        categoryList.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'tab-btn';
+            if (cat === activeCategory) btn.classList.add('active');
+            btn.setAttribute('data-cat', cat);
+            btn.innerText = cat;
+            btn.addEventListener('click', () => setActiveCategory(cat));
+            tabsContainer.appendChild(btn);
+        });
+    }
+
+    // 初始化默认频道 (第一个分类的第一个频道)
+    function initDefaultChannel() {
+        if (allChannels.length === 0) return;
+        const firstCategory = categoryList[0];
+        const firstChannel = allChannels.find(ch => ch.category === firstCategory);
+        if (firstChannel) {
+            currentChannel = firstChannel;
+            currentChannelNameSpan.innerText = firstChannel.name;
+            videoPlayer.src = firstChannel.url;
+            videoPlayer.load();
+            videoPlayer.play().catch(e => console.log("自动播放策略需交互"));
+            renderChannelsList();
+        }
+    }
+
+    // 全局辅助播放: 点击任何地方尝试恢复播放
+    document.body.addEventListener('click', () => {
+        if (videoPlayer && videoPlayer.paused && videoPlayer.src) {
+            videoPlayer.play().catch(e=>{});
+        }
+    });
+
+    function init() {
+        buildTabs();
+        initDefaultChannel();
+        setActiveCategory(categoryList[0] || "央视频道");
+    }
+    init();
+</script>
+</body>
+</html>
