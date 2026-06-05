@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Kudog 电视直播</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0f1e;
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            color: #eef2ff;
+            padding: 20px 24px 40px;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #FFFFFF, #86b6ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .header p {
+            color: #9aa4bf;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* 导航跳转按钮 */
+        .nav-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+        }
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #2563eb, #1e3a8a);
+            box-shadow: 0 4px 12px rgba(59,130,246,0.5);
+        }
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .player-section {
+            background: #000000;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+            margin-bottom: 32px;
+        }
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+            aspect-ratio: 16 / 9;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+            display: block;
+        }
+        .player-info {
+            background: rgba(10, 15, 30, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .current-channel {
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .current-channel .tag {
+            background: #e11d48;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: white;
+        }
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(225, 29, 72, 0.2);
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            color: #ff9fae;
+        }
+        .live-badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: #e11d48;
+            border-radius: 50%;
+            animation: pulse 1.2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.8);}
+            100% { opacity: 1; transform: scale(1.2);}
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 12px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #b9c3e6;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .tab-btn.active {
+            background: #2d3a5e;
+            color: white;
+        }
+        .tab-btn:hover:not(.active) {
+            background: #1f2a44;
+            color: #eef2ff;
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 130px));
+            gap: 14px;
+            justify-content: start;
+            max-height: 520px;
+            overflow-y: auto;
+            padding: 8px 4px 20px 4px;
+        }
+        .channels-grid::-webkit-scrollbar {
+            width: 5px;
+        }
+        .channels-grid::-webkit-scrollbar-track {
+            background: #141b2b;
+            border-radius: 10px;
+        }
+        .channels-grid::-webkit-scrollbar-thumb {
+            background: #3e4a6b;
+            border-radius: 10px;
+        }
+
+        .channel-card {
+            background: #111827;
+            border-radius: 20px;
+            padding: 12px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .channel-card:hover {
+            background: #1f2a48;
+            transform: translateY(-3px);
+        }
+        .channel-card.active-channel {
+            background: linear-gradient(145deg, #1e2b4a, #14203a);
+            border-left: 3px solid #3b82f6;
+        }
+        .channel-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+        }
+        .channel-type {
+            font-size: 0.65rem;
+            color: #7d8fb3;
+            margin-top: 6px;
+            background: #1e2a3a;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .loading-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            color: white;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            z-index: 1000;
+            transition: opacity 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .empty-tip {
+            text-align: center;
+            padding: 40px;
+            color: #6c7a9e;
+        }
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 0.7rem;
+            color: #4a5679;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+        }
+        @media (max-width: 720px) {
+            body { padding: 16px 12px 30px; }
+            .channels-grid { grid-template-columns: repeat(auto-fill, minmax(95px, 105px)); gap: 10px; }
+            .channel-name { font-size: 0.75rem; }
+            .tab-btn { padding: 6px 18px; font-size: 0.85rem; }
+            .nav-btn { padding: 5px 12px; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>Kudog 云视直播</h1>
+        <p>央视 · 卫视 · 高清秒播</p>
+        <a href="https://bcian.cn/" target="_blank" class="nav-btn">🚀 访问 kudog 导航页</a>
+    </div>
+
+    <div class="player-section">
+        <div class="video-wrapper">
+            <video id="liveVideo" controls autoplay muted playsinline preload="auto"></video>
+        </div>
+        <div class="player-info">
+            <div class="current-channel">
+                <span class="tag">LIVE</span>
+                <span id="currentChannelName">CCTV-1 综合</span>
+            </div>
+            <div class="live-badge">正在直播</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-category="cctv">📡 央视总台</button>
+        <button class="tab-btn" data-category="satellite">🌟 卫视频道</button>
+        <button class="tab-btn" data-category="education">🎓 教育频道</button>
+        <button class="tab-btn" data-category="children">🧸 少儿卡通</button>
+        <button class="tab-btn" data-category="digital">💎 数字付费</button>
+        <button class="tab-btn" data-category="fujian">🌊 福建地方</button>
+    </div>
+
+    <div id="channelsContainer" class="channels-grid"></div>
+    <footer>✨ 点击频道切换直播 | 源地址: bcian.cn</footer>
+</div>
+<div id="loadingToast" class="loading-toast" style="opacity:0;">切换频道中...</div>
+
+<script>
+    // ========== 基于 M3U 文件的直播源列表 ==========
+    const rawChannels = [
+        // 央视频道
+        { name: "CCTV-1 综合", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv1" },
+        { name: "CCTV-2 财经", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv2" },
+        { name: "CCTV-4 中文国际", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv4" },
+        { name: "CCTV-7 国防军事", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv7" },
+        { name: "CCTV-9 纪录", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv9" },
+        { name: "CCTV-10 科教", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv10" },
+        { name: "CCTV-11 戏曲", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv11" },
+        { name: "CCTV-12 社会与法", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv12" },
+        { name: "CCTV-13 新闻", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv13" },
+        { name: "CCTV-14 少儿", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv14" },
+        { name: "CCTV-15 音乐", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv15" },
+        { name: "CCTV-17 农业农村", type: "cctv", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cctv17" },
+        
+        // 教育频道
+        { name: "中国教育-1", type: "education", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cetv1" },
+        { name: "中国教育-2", type: "education", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cetv2" },
+        { name: "中国教育-4", type: "education", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cetv4" },
+        
+        // 卫视频道
+        { name: "北京卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=bjws" },
+        { name: "东方卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=dfws" },
+        { name: "天津卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=tjws" },
+        { name: "重庆卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=cqws" },
+        { name: "黑龙江卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=hljws" },
+        { name: "吉林卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=jlws" },
+        { name: "辽宁卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=lnws" },
+        { name: "内蒙古卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=nmws" },
+        { name: "宁夏卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=nxws" },
+        { name: "甘肃卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=gsws" },
+        { name: "青海卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=qhws" },
+        { name: "陕西卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=sxws" },
+        { name: "河北卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=hbws" },
+        { name: "山西卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=sxiws" },
+        { name: "山东卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=sdws" },
+        { name: "安徽卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=ahws" },
+        { name: "河南卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=hnws" },
+        { name: "湖北卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=hubws" },
+        { name: "湖南卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=hunws" },
+        { name: "江西卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=jxws" },
+        { name: "江苏卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=jsws" },
+        { name: "浙江卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=zjws" },
+        { name: "东南卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=dnws" },
+        { name: "海峡卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=hxws" },
+        { name: "厦门卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=xmws" },
+        { name: "广东卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=gdws" },
+        { name: "深圳卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=szws" },
+        { name: "广西卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=gxws" },
+        { name: "云南卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=ynws" },
+        { name: "贵州卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=gzws" },
+        { name: "四川卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=scws" },
+        { name: "新疆卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=xjws" },
+        { name: "兵团卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=btws" },
+        { name: "西藏卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=xzws" },
+        { name: "海南卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=hinws" },
+        { name: "三沙卫视", type: "satellite", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=ssws" },
+        
+        // 少儿卡通
+        { name: "卡酷少儿", type: "children", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=kkse" },
+        { name: "金鹰卡通", type: "children", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=jykt" },
+        { name: "嘉佳卡通", type: "children", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=jjkt" },
+        
+        // 数字付费
+        { name: "东方财经", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=dfcj" },
+        { name: "动漫秀场", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=dmxc" },
+        { name: "都市剧场", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=dsjc" },
+        { name: "多彩文体", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=dcwt" },
+        { name: "法治天地", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=fztd" },
+        { name: "乐游", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=ly" },
+        { name: "金色学堂", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=jsxt" },
+        { name: "生活时尚", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=shss" },
+        { name: "游戏风云", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=yxfy" },
+        { name: "快乐垂钓", type: "digital", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=klcd" },
+        
+        // 福建地方
+        { name: "福建综合", type: "fujian", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=fjzh" },
+        { name: "福建新闻", type: "fujian", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=fjxw" },
+        { name: "福建文体", type: "fujian", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=fjwt" },
+        { name: "福建少儿", type: "fujian", url: "https://live.bcian.cn/%E5%A4%AE%E8%A7%86cctv/福建bst.php?id=fjse" }
+    ];
+
+    // 去重
+    const uniqueMap = new Map();
+    for (const ch of rawChannels) {
+        if (!uniqueMap.has(ch.name)) uniqueMap.set(ch.name, ch);
+    }
+    const allChannels = Array.from(uniqueMap.values());
+    
+    // 按类型分类
+    const cctvChannels = allChannels.filter(ch => ch.type === 'cctv');
+    const satelliteChannels = allChannels.filter(ch => ch.type === 'satellite');
+    const educationChannels = allChannels.filter(ch => ch.type === 'education');
+    const childrenChannels = allChannels.filter(ch => ch.type === 'children');
+    const digitalChannels = allChannels.filter(ch => ch.type === 'digital');
+    const fujianChannels = allChannels.filter(ch => ch.type === 'fujian');
+
+    const videoPlayer = document.getElementById('liveVideo');
+    const currentChannelNameSpan = document.getElementById('currentChannelName');
+    const channelsContainer = document.getElementById('channelsContainer');
+    const loadingToast = document.getElementById('loadingToast');
+    let activeCategory = 'cctv';
+    let currentChannel = null;
+    let toastTimeout = null;
+
+    function showLoadingToast(msg, autoHide = true) {
+        if (loadingToast) {
+            loadingToast.innerText = msg;
+            loadingToast.style.opacity = '1';
+            if (toastTimeout) clearTimeout(toastTimeout);
+            if (autoHide) toastTimeout = setTimeout(() => { if (loadingToast) loadingToast.style.opacity = '0'; }, 1800);
+        }
+    }
+    function hideLoadingToast() { if (loadingToast) loadingToast.style.opacity = '0'; if (toastTimeout) clearTimeout(toastTimeout); }
+
+    function switchChannel(channel) {
+        if (!channel || !channel.url) return;
+        if (currentChannel && currentChannel.name === channel.name && videoPlayer.src === channel.url) return;
+        showLoadingToast(`加载 ${channel.name} ...`);
+        currentChannel = channel;
+        currentChannelNameSpan.innerText = channel.name;
+        videoPlayer.pause();
+        videoPlayer.src = '';
+        videoPlayer.src = channel.url;
+        videoPlayer.load();
+        videoPlayer.play().catch(e => {
+            console.warn("自动播放被阻止:", e);
+            showLoadingToast(`点击播放器播放 ${channel.name}`, true);
+        });
+        renderChannelsList();
+        videoPlayer.onerror = () => showLoadingToast(`频道 ${channel.name} 源失效`, true);
+        videoPlayer.oncanplay = () => hideLoadingToast();
+    }
+
+    function getCategoryLabel(type) {
+        const labels = {
+            'cctv': '央视',
+            'satellite': '卫视',
+            'education': '教育',
+            'children': '少儿',
+            'digital': '付费',
+            'fujian': '福建'
+        };
+        return labels[type] || '频道';
+    }
+
+    function renderChannelsList() {
+        let channelsList = [];
+        switch(activeCategory) {
+            case 'cctv': channelsList = cctvChannels; break;
+            case 'satellite': channelsList = satelliteChannels; break;
+            case 'education': channelsList = educationChannels; break;
+            case 'children': channelsList = childrenChannels; break;
+            case 'digital': channelsList = digitalChannels; break;
+            case 'fujian': channelsList = fujianChannels; break;
+            default: channelsList = cctvChannels;
+        }
+        if (!channelsContainer) return;
+        if (channelsList.length === 0) {
+            channelsContainer.innerHTML = '<div class="empty-tip">✨ 暂无频道数据</div>';
+            return;
+        }
+        const fragment = document.createDocumentFragment();
+        channelsList.forEach(ch => {
+            const card = document.createElement('div');
+            card.className = 'channel-card';
+            if (currentChannel && currentChannel.name === ch.name) card.classList.add('active-channel');
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'channel-name';
+            nameSpan.innerText = ch.name;
+            const typeSpan = document.createElement('div');
+            typeSpan.className = 'channel-type';
+            typeSpan.innerText = getCategoryLabel(ch.type);
+            card.appendChild(nameSpan);
+            card.appendChild(typeSpan);
+            card.addEventListener('click', (e) => { e.stopPropagation(); switchChannel(ch); });
+            fragment.appendChild(card);
+        });
+        channelsContainer.innerHTML = '';
+        channelsContainer.appendChild(fragment);
+    }
+
+    function setActiveTab(category) {
+        activeCategory = category;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            if (btn.getAttribute('data-category') === category) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        renderChannelsList();
+    }
+
+    function bindTabs() {
+        document.querySelector('.tab-btn[data-category="cctv"]')?.addEventListener('click', () => setActiveTab('cctv'));
+        document.querySelector('.tab-btn[data-category="satellite"]')?.addEventListener('click', () => setActiveTab('satellite'));
+        document.querySelector('.tab-btn[data-category="education"]')?.addEventListener('click', () => setActiveTab('education'));
+        document.querySelector('.tab-btn[data-category="children"]')?.addEventListener('click', () => setActiveTab('children'));
+        document.querySelector('.tab-btn[data-category="digital"]')?.addEventListener('click', () => setActiveTab('digital'));
+        document.querySelector('.tab-btn[data-category="fujian"]')?.addEventListener('click', () => setActiveTab('fujian'));
+    }
+
+    function initDefaultChannel() {
+        if (cctvChannels.length) {
+            const defaultChan = cctvChannels.find(c => c.name.includes('CCTV-1')) || cctvChannels[0];
+            currentChannel = defaultChan;
+            currentChannelNameSpan.innerText = defaultChan.name;
+            videoPlayer.src = defaultChan.url;
+            videoPlayer.load();
+            videoPlayer.play().catch(e => console.log("自动播放失败", e));
+            renderChannelsList();
+        }
+    }
+
+    document.body.addEventListener('click', () => {
+        if (videoPlayer && videoPlayer.paused && videoPlayer.src) videoPlayer.play().catch(e=>{});
+    });
+
+    function init() {
+        bindTabs();
+        initDefaultChannel();
+        setActiveTab('cctv');
+    }
+    init();
+</script>
+</body>
+</html>
