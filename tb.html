@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kudog专业ICO图标生成器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+         
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+         
+        .header {
+            text-align: center;
+            margin: 10px 0 20px;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+        }
+         
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 10px;
+        }
+         
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #4CAF50, transparent);
+            border-radius: 2px;
+        }
+         
+        .version {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-bottom: 8px;
+            backdrop-filter: blur(5px);
+        }
+         
+        .subtitle {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 15px;
+            line-height: 1.5;
+            background: rgba(0,0,0,0.15);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border-left: 3px solid #4CAF50;
+        }
+         
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+         
+        .panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            flex: 1;
+            min-width: 300px;
+        }
+         
+        .preview-panel {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+         
+        .panel-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+         
+        .panel-title i {
+            color: #4CAF50;
+            font-size: 1.4rem;
+        }
+         
+        .form-group {
+            margin-bottom: 20px;
+        }
+         
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+         
+        .half-width {
+            flex: 1;
+            min-width: 0;
+        }
+         
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            font-size: 0.98rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+         
+        label i {
+            color: #4CAF50;
+            width: 20px;
+            text-align: center;
+        }
+         
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+         
+        input:focus, select:focus, textarea:focus {
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 3px #4CAF50;
+        }
+         
+        textarea {
+            height: 100px; /* 优化高度 */
+            resize: none; /* 禁止调节高度 */
+            line-height: 1.5;
+        }
+         
+        button {
+            background: linear-gradient(to right, #4CAF50, #2E8B57);
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+         
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+        }
+         
+        .download-btn {
+            background: linear-gradient(to right, #2196F3, #21CBF3);
+            margin: 8px 0;
+            width: 100%;
+        }
+         
+        .download-btn.ico {
+            background: linear-gradient(to right, #FF5722, #FF9800);
+        }
+         
+        .icon-canvas {
+            width: 256px;
+            height: 256px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+         
+        .text-preview {
+            text-align: center;
+            max-width: 100%;
+            padding: 15px;
+            font-size: 5.2rem;
+            font-weight: bold;
+            color: white;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.2;
+            position: relative;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+         
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+         
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+         
+        .tab-btn.active {
+            background: linear-gradient(to right, #4CAF50, #2E8B57);
+            color: white;
+        }
+         
+        .tab-content {
+            display: none;
+        }
+         
+        .tab-content.active {
+            display: block;
+        }
+         
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+         
+        .color-preview {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+         
+        .color-preview:hover {
+            transform: scale(1.05);
+        }
+         
+        .text-input-container {
+            display: flex;
+            gap: 10px;
+        }
+         
+        .text-input-container textarea {
+            flex: 1;
+            margin-bottom: 0;
+        }
+         
+        .style-buttons {
+            display: flex;
+            /* 从垂直布局改为水平布局 */
+            flex-direction: row;
+            gap: 8px;
+        }
+         
+        .text-style-btn {
+            padding: 10px;
+            border: none;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            /* 调整宽度以适应水平布局 */
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+         
+        .text-style-btn.active {
+            background: linear-gradient(to right, #4CAF50, #2E8B57);
+        }
+         
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 5px;
+        }
+         
+        .slider-container span {
+            min-width: 45px;
+            text-align: center;
+            font-size: 0.95rem;
+            background: rgba(0,0,0,0.2);
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+         
+        input[type="range"] {
+            flex: 1;
+            height: 7px;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            outline: none;
+        }
+         
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            border: 2px solid white;
+        }
+         
+        .download-options {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+         
+        .download-options label {
+            margin-bottom: 15;
+            font-size: 0.95rem;
+            min-width: 100px;
+            text-align: center;
+        }
+         
+        .download-options select {
+            flex: 1;
+            min-width: 120px;
+            padding: 8px;
+            font-size: 0.95rem;
+        }
+         
+        .footer {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            max-width: 1200px;
+            padding: 10px;
+            background: rgba(0,0,0,0.15);
+            border-radius: 8px;
+            width: 100%;
+        }
+         
+        .compatibility-note {
+            background: rgba(0, 128, 0, 0.25);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid rgba(0, 128, 0, 0.4);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+         
+        .success-message {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 25px;
+            border-radius: 8px;
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+         
+        .success-message.error {
+            background: #f44336;
+        }
+         
+        .format-options {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+         
+        .format-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 8px 0 5px;
+            text-align: center;
+            color: #4CAF50;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+         
+        .transparent-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 0px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+         
+        .update-log {
+            display: none;
+            background: rgba(0,0,0,0.25);
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+         
+        .update-log-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 10px;
+        }
+         
+        .update-log.expanded .update-log-content {
+            max-height: 400px;
+            padding: 10px;
+        }
+         
+        .update-log h3 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+         
+        .update-log ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+         
+        .update-log li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+         
+        .center-guides {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            display: block;
+        }
+         
+        .center-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
+        }
+         
+        .horizontal-line {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            transform: translateY(-50%);
+        }
+         
+        .vertical-line {
+            top: 0;
+            left: 50%;
+            width: 1px;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+         
+        .debug-toggle {
+            position: relative;
+            background: rgba(0,0,0,0.35);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            z-index: 10;
+            margin: 12px auto 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+         
+        .center-indicator {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: rgba(255, 0, 0, 0.6);
+            border-radius: 50%;
+            z-index: 20;
+            pointer-events: none;
+            display: block;
+            border: 2px solid white;
+            left: calc(50% - 9px);
+            top: calc(50% - 9px);
+        }
+         
+        .center-indicator:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+         
+        .text-center-highlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+         
+        .text-center-box {
+            width: 90%;
+            height: 90%;
+            border: 2px dashed rgba(76, 175, 80, 0.5);
+            border-radius: 5px;
+            display: block;
+        }
+         
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 220px;
+        }
+         
+        .upload-area:hover {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: #4CAF50;
+        }
+         
+        .upload-area i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: #4CAF50;
+        }
+         
+        .upload-btn {
+            background: linear-gradient(to right, #2196F3, #21CBF3);
+            margin-top: 12px;
+            padding: 8px 15px;
+            font-size: 0.95rem;
+        }
+         
+        .image-preview-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 120px;
+            max-height: 200px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+        }
+         
+        #uploadedImage {
+            display: none;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            object-fit: contain;
+        }
+         
+        .image-controls {
+            display: none;
+            margin-top: 15px;
+        }
+         
+        .image-controls-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+         
+        .image-control-group {
+            flex: 1;
+            min-width: 0;
+        }
+         
+        .crop-option1 {
+		    display: none;
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+		
+		.crop-option2 {
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+			margin-bottom: 20px;
+        }
+         
+        .adjustment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+         
+        .circle-overlay {
+            position: absolute;
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+         
+        .preview-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+         
+        #imagePreview {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            position: absolute;
+            display: none;
+        }
+         
+        .shape-visual {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 8px;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+         
+        .shape-visual.rounded {
+            border-radius: 5px;
+        }
+         
+        .shape-visual.circle {
+            border-radius: 50%;
+        }
+         
+        .example-text {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 4px;
+            color: #4CAF50;
+            font-style: italic;
+        }
+         
+        .mode-indicator {
+		    display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(76, 175, 80, 0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 30;
+        }
+         
+        .consistency-fix {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 255, 0, 0.2);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            z-index: 30;
+        }
+         
+        .font-adjustment {
+			display: none;
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+         
+        .font-adjustment h4 {
+            margin-bottom: 8px;
+            color: #4CAF50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.98rem;
+        }
+         
+        .win11-fix {
+            background: linear-gradient(135deg, #0078d7, #1e4a7c);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #4fc3f7;
+        }
+         
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+             
+            .controls, .preview {
+                width: 100%;
+            }
+             
+            h1 {
+                font-size: 2rem;
+            }
+             
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+             
+            .icon-canvas {
+                width: 200px;
+                height: 200px;
+            }
+             
+            .upload-area {
+                height: 150px;
+                padding: 15px;
+            }
+            
+            .format-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-icons"></i> Kudog专业ICO图标生成器</h1>
+    </div>
+     
+    <div class="container">
+        <div class="panel controls">
+            <div class="tabs">
+                <button class="tab-btn active" id="textTabBtn"><i class="fas fa-font"></i> 文字图标</button>
+                <button class="tab-btn" id="imageTabBtn"><i class="fas fa-image"></i> 图片图标</button>
+            </div>
+             
+            <div id="textTab" class="tab-content active">
+                <div class="form-group">
+                    <label for="iconText"><i class="fas fa-text-height"></i> 文字内容</label>
+                    <div class="text-input-container">
+                        <textarea id="iconText" >图</textarea>
+                        <div class="style-buttons">
+                            <button id="boldBtn" class="text-style-btn">
+                                <i class="fas fa-bold"></i> 加粗
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                 
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label><i class="fas fa-paint-brush"></i> 文字颜色</label>
+                        <div class="color-picker-container">
+                            <input type="color" id="textColor" value="#FF0000">
+                            <div class="color-preview" id="textColorPreview" style="background-color: #FF0000;"></div>
+                        </div>
+                    </div>
+                     
+                    <div class="form-group half-width">
+                        <label><i class="fas fa-fill"></i>背景色&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;透明
+                            <div class="transparent-option">
+                                <input type="checkbox" id="transparentBg" checked>
+                            </div>
+                        </label>
+                        <div class="color-picker-container">
+                            <input type="color" id="bgColor" value="#2196F3">
+                            <div class="color-preview" id="bgColorPreview" style="background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0px;"></div>
+                        </div>
+                    </div>
+                </div>
+                 
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label><i class="fas fa-font"></i> 字体</label>
+                        <select id="fontFamily">
+                            <option value="KaiTi" selected>楷体</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Helvetica">Helvetica</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Microsoft YaHei">微软雅黑</option>
+                            <option value="SimSun">宋体</option>
+                            <option value="FangSong">仿宋</option>
+                            <option value="LiSu">隶书</option>
+                            <option value="YouYuan">幼圆</option>
+                            <option value="'Noto Sans SC', sans-serif">Noto Sans SC (思源黑体)</option>
+                            <option value="'Noto Serif SC', serif">Noto Serif SC (思源宋体)</option>
+                            <option value="'ZCOOL XiaoWei', serif">站酷小薇体</option>
+                            <option value="'ZCOOL QingKe HuangYou', cursive">站酷庆科黄油体</option>
+                            <option value="'ZCOOL KuaiLe', cursive">站酷快乐体</option>
+                            <option value="'Ma Shan Zheng', cursive">马善政体</option>
+                        </select>
+                    </div>
+                     
+                    <div class="form-group half-width">
+                        <label><i class="fas fa-shapes"></i> 图标形状</label>
+                        <select id="iconShape">
+                            <option value="rounded">方形圆角</option>
+                            <option value="circle">圆形</option>
+                            <option value="square">方形</option>
+                        </select>
+                    </div>
+                </div>
+                 
+                <div class="form-group">
+                    <label><i class="fas fa-text-height"></i> 字体大小</label>
+                    <div class="slider-container">
+                        <input type="range" id="fontSize" min="10" max="300" value="230">
+                        <span id="fontSizeValue">230px</span>
+                    </div>
+                     
+                    <div class="line-spacing-control">
+                        <label><i class="fas fa-arrows-alt-v"></i> 行间距</label>
+                        <div class="slider-container">
+                            <input type="range" id="lineSpacing" min="0.8" max="2.0" step="0.1" value="1.2">
+                            <span id="lineSpacingValue">1.2x</span>
+                        </div>
+                    </div>
+                </div>
+                 
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label><i class="fas fa-ruler-vertical"></i> 垂直偏移</label>
+                        <div class="slider-container">
+                            <input type="range" id="verticalOffset" min="-30" max="30" value="0">
+                            <span id="verticalOffsetValue">0px</span>
+                        </div>
+                    </div>
+                     
+                    <div class="form-group half-width">
+                        <label><i class="fas fa-ruler-horizontal"></i> 横向偏移</label>
+                        <div class="slider-container">
+                            <input type="range" id="horizontalOffset" min="-30" max="30" value="0">
+                            <span id="horizontalOffsetValue">0px</span>
+                        </div>
+                    </div>
+                </div>
+                 
+                <div class="font-adjustment">
+                    <h4><i class="fas fa-sliders-h"></i> 字体微调</h4>
+                    <div class="form-group">
+                        <label><i class="fas fa-text-height"></i> 字体基线调整</label>
+                        <div class="slider-container">
+                            <input type="range" id="fontBaseline" min="-0.2" max="0.2" step="0.01" value="0">
+                            <span id="fontBaselineValue">0em</span>
+                        </div>
+                        <div class="example-text">针对不同字体调整垂直位置</div>
+                    </div>
+                </div>
+            </div>
+             
+            <div id="imageTab" class="tab-content">
+                <div class="form-group">
+                    <label for="imageUpload"><i class="fas fa-cloud-upload-alt"></i> 上传图片</label>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>拖放图片或点击上传</h3>
+                        <p>支持 JPG, PNG, GIF 格式</p>
+                        <button class="upload-btn"><i class="fas fa-folder-open"></i> 选择图片</button>
+                    </div>
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                </div>
+                 
+                <div class="image-preview-container" id="imagePreviewContainer">
+                    <label><i class="fas fa-image"></i> 图片预览</label>
+                    <img id="uploadedImage" src="" alt="上传的图片">
+                </div>
+                 
+                <div class="image-controls" id="imageControls">
+                    <div class="crop-option1">
+                        <h4><i class="fas fa-crop-alt"></i> 裁剪模式</h4>
+                        <select id="cropMode">
+						    <option value="containr" selected>适应 (保持比例)</option>
+                            <option value="cover">填充 (保持比例)</option>
+                        </select>
+                    </div>
+                     
+                    <div class="crop-option2">
+                       	    <label><i class="fas fa-shapes"></i> 图标形状</label>
+                            <select id="imageShape">
+                            <option value="rounded" selected>方形圆角</option>
+                            <option value="circle">圆形</option>
+                            <option value="square">方形</option>
+                        </select>
+                    </div>
+                    
+                    <div class="adjustment-grid">
+                        <div class="form-group">
+                            <label><i class="fas fa-sliders-h"></i> 透明度</label>
+                            <div class="slider-container">
+                                <input type="range" id="imageOpacity" min="0" max="100" value="100">
+                                <span id="imageOpacityValue">100%</span>
+                            </div>
+                        </div>
+                         
+                        <div class="form-group">
+                            <label><i class="fas fa-search-plus"></i> 缩放比例</label>
+                            <div class="slider-container">
+                                <input type="range" id="imageScale" min="50" max="280" value="100">
+                                <span id="imageScaleValue">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                     
+                    <div class="adjustment-grid">
+                        <div class="form-group">
+                            <label><i class="fas fa-arrows-alt-v"></i> 垂直位置</label>
+                            <div class="slider-container">
+                                <input type="range" id="imageVertical" min="-180" max="180" value="0">
+                                <span id="imageVerticalValue">0px</span>
+                            </div>
+                        </div>
+                         
+                        <div class="form-group">
+                            <label><i class="fas fa-arrows-alt-h"></i> 水平位置</label>
+                            <div class="slider-container">
+                                <input type="range" id="imageHorizontal" min="-180" max="180" value="0">
+                                <span id="imageHorizontalValue">0px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+             
+            <div class="update-log" id="updateLog">
+                <h3><i class="fas fa-clipboard-list"></i> 更新日志 <i class="fas fa-chevron-down"></i></h3>
+                <div class="update-log-content">
+                    <p><strong>(位置缩放修复版)</strong></p>
+
+                </div>
+            </div>
+        </div>
+         
+        <div class="panel preview-panel">
+            <h2 class="panel-title"><i class="fas fa-eye"></i> 图标预览 <span class="mode-indicator" id="modeIndicator">文字模式</span></h2>
+             
+            <div class="icon-canvas" id="iconCanvas">
+                <div class="center-guides" id="centerGuides">
+                    <div class="center-line horizontal-line"></div>
+                    <div class="center-line vertical-line"></div>
+                </div>
+                <div class="center-indicator" id="centerIndicator"></div>
+                <div class="circle-overlay" id="circleOverlay"></div>
+                <div class="text-center-highlight">
+                    <div class="text-center-box" id="textCenterBox"></div>
+                </div>
+                <div id="textPreview" class="text-preview">图</div>
+                <div class="preview-image-container">
+                    <img id="imagePreview">
+                </div>
+            </div>
+             
+            <button class="debug-toggle" id="toggleDebugBtn"><i class="fas fa-eye"></i> 显示参考线</button>
+             
+            <div class="download-options">
+                <div>
+                    <label for="downloadSize"><i class="fas fa-ruler"></i> 主尺寸:</label>
+                    <select id="downloadSize">
+                        <option value="16">16×16</option>
+                        <option value="32">32×32</option>
+                        <option value="48">48×48</option>
+                        <option value="64">64×64</option>
+                        <option value="128">128×128</option>
+                        <option value="256" selected>256×256</option>
+                    </select>
+                </div>
+            </div>
+             
+            <div class="format-title">下载格式</div>
+            <div class="format-options">
+                <button class="download-btn" id="downloadPngBtn"><i class="fas fa-file-image"></i> 下载PNG图标</button>
+                <button class="download-btn ico" id="downloadIcoBtn"><i class="fas fa-file-download"></i> 下载ICO图标</button>
+            </div>
+             
+        </div>
+    </div>
+          
+    <div class="success-message" id="successMessage">
+        <i class="fas fa-check-circle"></i>
+        <span id="messageText">操作成功！</span>
+    </div>
+ 
+    <script>
+        // 文字样式状态
+        const textStyles = {
+            bold: false
+        };
+         
+        // 当前活动标签
+        let activeTab = 'text';
+        // 调试模式状态
+        let debugMode = true;
+        // 当前上传的图片
+        let uploadedImage = null;
+         
+        // 字体基线调整值
+        let fontBaselineAdjustment = 0;
+         
+        // DOM元素
+        const elements = {
+            textTabBtn: document.getElementById('textTabBtn'),
+            imageTabBtn: document.getElementById('imageTabBtn'),
+            textTab: document.getElementById('textTab'),
+            imageTab: document.getElementById('imageTab'),
+            boldBtn: document.getElementById('boldBtn'),
+            iconText: document.getElementById('iconText'),
+            textColor: document.getElementById('textColor'),
+            bgColor: document.getElementById('bgColor'),
+            fontSize: document.getElementById('fontSize'),
+            fontSizeValue: document.getElementById('fontSizeValue'),
+            verticalOffset: document.getElementById('verticalOffset'),
+            verticalOffsetValue: document.getElementById('verticalOffsetValue'),
+            horizontalOffset: document.getElementById('horizontalOffset'),
+            horizontalOffsetValue: document.getElementById('horizontalOffsetValue'),
+            fontFamily: document.getElementById('fontFamily'),
+            iconShape: document.getElementById('iconShape'),
+            iconCanvas: document.getElementById('iconCanvas'),
+            textPreview: document.getElementById('textPreview'),
+            downloadSize: document.getElementById('downloadSize'),
+            downloadPngBtn: document.getElementById('downloadPngBtn'),
+            downloadIcoBtn: document.getElementById('downloadIcoBtn'),
+            textColorPreview: document.getElementById('textColorPreview'),
+            bgColorPreview: document.getElementById('bgColorPreview'),
+            successMessage: document.getElementById('successMessage'),
+            messageText: document.getElementById('messageText'),
+            transparentBg: document.getElementById('transparentBg'),
+            updateLog: document.getElementById('updateLog'),
+            toggleDebugBtn: document.getElementById('toggleDebugBtn'),
+            centerGuides: document.getElementById('centerGuides'),
+            centerIndicator: document.getElementById('centerIndicator'),
+            textCenterBox: document.getElementById('textCenterBox'),
+            lineSpacing: document.getElementById('lineSpacing'),
+            lineSpacingValue: document.getElementById('lineSpacingValue'),
+            modeIndicator: document.getElementById('modeIndicator'),
+            uploadArea: document.getElementById('uploadArea'),
+            imageUpload: document.getElementById('imageUpload'),
+            uploadedImage: document.getElementById('uploadedImage'),
+            imagePreviewContainer: document.getElementById('imagePreviewContainer'),
+            imageControls: document.getElementById('imageControls'),
+            cropMode: document.getElementById('cropMode'),
+            imageOpacity: document.getElementById('imageOpacity'),
+            imageOpacityValue: document.getElementById('imageOpacityValue'),
+            imageShape: document.getElementById('imageShape'),
+            imageVertical: document.getElementById('imageVertical'),
+            imageVerticalValue: document.getElementById('imageVerticalValue'),
+            imageHorizontal: document.getElementById('imageHorizontal'),
+            imageHorizontalValue: document.getElementById('imageHorizontalValue'),
+            imageScale: document.getElementById('imageScale'),
+            imageScaleValue: document.getElementById('imageScaleValue'),
+            circleOverlay: document.getElementById('circleOverlay'),
+            imagePreview: document.getElementById('imagePreview'),
+            fontBaseline: document.getElementById('fontBaseline'),
+            fontBaselineValue: document.getElementById('fontBaselineValue')
+        };
+         
+        // 切换标签页
+        function openTab(tabName) {
+            activeTab = tabName;
+             
+            // 更新标签按钮状态
+            elements.textTabBtn.classList.toggle('active', tabName === 'text');
+            elements.imageTabBtn.classList.toggle('active', tabName === 'image');
+             
+            // 更新标签内容显示
+            elements.textTab.classList.toggle('active', tabName === 'text');
+            elements.imageTab.classList.toggle('active', tabName === 'image');
+             
+            // 更新预览显示
+            elements.textPreview.style.display = tabName === 'text' ? 'flex' : 'none';
+            elements.imagePreview.style.display = tabName === 'image' ? 'block' : 'none';
+             
+            // 更新模式指示器
+            elements.modeIndicator.textContent = tabName === 'text' ? '文字模式' : '图片模式';
+             
+            // 重置圆角覆盖
+            updateShapeOverlay();
+             
+            // 如果是图片模式且没有上传图片，隐藏图片控制
+            if (tabName === 'image' && !uploadedImage) {
+                elements.imageControls.style.display = 'none';
+            }
+        }
+         
+        // 更新字体大小显示
+        function updateFontSize() {
+            elements.fontSizeValue.textContent = elements.fontSize.value + 'px';
+            updateTextPreview();
+        }
+         
+        // 更新行间距显示
+        function updateLineSpacing() {
+            elements.lineSpacingValue.textContent = elements.lineSpacing.value + 'x';
+            updateTextPreview();
+        }
+         
+        // 更新垂直偏移显示
+        function updateVerticalOffset() {
+            elements.verticalOffsetValue.textContent = elements.verticalOffset.value + 'px';
+            updateTextPreview();
+        }
+         
+        // 更新横向偏移显示
+        function updateHorizontalOffset() {
+            elements.horizontalOffsetValue.textContent = elements.horizontalOffset.value + 'px';
+            updateTextPreview();
+        }
+         
+        // 更新字体基线调整显示
+        function updateFontBaseline() {
+            fontBaselineAdjustment = parseFloat(elements.fontBaseline.value);
+            elements.fontBaselineValue.textContent = fontBaselineAdjustment.toFixed(2) + 'em';
+            updateTextPreview();
+        }
+         
+        // 实时更新颜色预览
+        function updateColorPreviews() {
+            elements.textColorPreview.style.backgroundColor = elements.textColor.value;
+            
+            // 根据透明复选框状态更新背景色预览
+            if (elements.transparentBg.checked) {
+                elements.bgColorPreview.style.backgroundImage = "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)";
+                elements.bgColorPreview.style.backgroundSize = "10px 10px";
+                elements.bgColorPreview.style.backgroundPosition = "0 0, 0 5px, 5px -5px, -5px 0px";
+                elements.bgColorPreview.style.backgroundColor = "transparent";
+            } else {
+                elements.bgColorPreview.style.backgroundImage = "none";
+                elements.bgColorPreview.style.backgroundColor = elements.bgColor.value;
+            }
+            
+            updateTextPreview();
+        }
+         
+        // 实时更新文字预览
+        function updateTextPreview() {
+            // 获取文本内容
+            const text = elements.iconText.value;
+             
+            // 更新预览
+            elements.textPreview.textContent = text;
+            elements.textPreview.style.color = elements.textColor.value;
+             
+            // 设置行间距
+            const lineSpacing = parseFloat(elements.lineSpacing.value);
+            elements.textPreview.style.lineHeight = lineSpacing + 'em';
+             
+            // 设置背景色或透明
+            if (elements.transparentBg.checked) {
+                elements.iconCanvas.style.backgroundColor = 'transparent';
+            } else {
+                elements.iconCanvas.style.backgroundColor = elements.bgColor.value;
+            }
+             
+            elements.textPreview.style.fontSize = elements.fontSize.value + 'px';
+            elements.textPreview.style.fontFamily = elements.fontFamily.value;
+             
+            // 应用文字样式
+            elements.textPreview.style.fontWeight = textStyles.bold ? 'bold' : 'normal';
+            elements.textPreview.style.fontStyle = 'normal'; // 斜体功能已移除
+             
+            // 应用偏移
+            elements.textPreview.style.transform = `translate(${elements.horizontalOffset.value}px, ${elements.verticalOffset.value}px)`;
+             
+            // 确保文本居中
+            centerTextPreview();
+            
+            // 应用形状
+            const shape = elements.iconShape.value;
+            elements.iconCanvas.style.borderRadius = '0';
+            if (shape === 'circle') {
+                elements.iconCanvas.style.borderRadius = '50%';
+            } else if (shape === 'rounded') {
+                elements.iconCanvas.style.borderRadius = '18px';
+            }
+            
+            // 更新形状覆盖
+            updateShapeOverlay();
+        }
+         
+        // 确保文本居中显示
+        function centerTextPreview() {
+            // 确保文本在容器中居中
+            elements.textPreview.style.display = 'flex';
+            elements.textPreview.style.justifyContent = 'center';
+            elements.textPreview.style.alignItems = 'center';
+            elements.textPreview.style.textAlign = 'center';
+        }
+         
+        // 切换文字样式
+        function toggleTextStyle(style) {
+            textStyles[style] = !textStyles[style];
+            elements[style + 'Btn'].classList.toggle('active', textStyles[style]);
+            updateTextPreview();
+        }
+         
+        // 更新图片透明度显示
+        function updateImageOpacity() {
+            elements.imageOpacityValue.textContent = elements.imageOpacity.value + '%';
+            if (uploadedImage) {
+                elements.imagePreview.style.opacity = elements.imageOpacity.value / 100;
+            }
+        }
+         
+        // 更新图片垂直位置显示
+        function updateImageVertical() {
+            elements.imageVerticalValue.textContent = elements.imageVertical.value + 'px';
+            updateImagePreview();
+        }
+         
+        // 更新图片水平位置显示
+        function updateImageHorizontal() {
+            elements.imageHorizontalValue.textContent = elements.imageHorizontal.value + 'px';
+            updateImagePreview();
+        }
+         
+        // 更新图片缩放比例显示
+        function updateImageScale() {
+            elements.imageScaleValue.textContent = elements.imageScale.value + '%';
+            updateImagePreview();
+        }
+         
+        // 更新图片预览位置
+        function updateImagePreview() {
+            if (!uploadedImage) return;
+             
+            // 设置预览图片
+            elements.imagePreview.src = elements.uploadedImage.src;
+            elements.imagePreview.style.opacity = elements.imageOpacity.value / 100;
+             
+            // 应用位置和缩放
+            const verticalOffset = parseInt(elements.imageVertical.value);
+            const horizontalOffset = parseInt(elements.imageHorizontal.value);
+            const scale = parseInt(elements.imageScale.value) / 100;
+             
+            // 使用transform组合多个变换
+            elements.imagePreview.style.transform = 
+                `translate(${horizontalOffset}px, ${verticalOffset}px)
+                 scale(${scale})`;
+             
+            // 更新圆形裁剪指示器
+            updateShapeOverlay();
+            
+            // 应用形状
+            const shape = elements.imageShape.value;
+            if (shape === 'circle') {
+                elements.iconCanvas.style.borderRadius = '50%';
+            } else if (shape === 'rounded') {
+                elements.iconCanvas.style.borderRadius = '15%';
+            } else {
+                elements.iconCanvas.style.borderRadius = '0';
+            }
+        }
+         
+        // 更新形状覆盖层
+        function updateShapeOverlay() {
+            const shape = activeTab === 'text' ? elements.iconShape.value : elements.imageShape.value;
+            const iconCanvas = elements.iconCanvas;
+            const centerX = iconCanvas.offsetWidth / 2;
+            const centerY = iconCanvas.offsetHeight / 2;
+             
+            if (shape === 'circle') {
+                const radius = iconCanvas.offsetWidth / 2;
+                elements.circleOverlay.style.display = 'block';
+                elements.circleOverlay.style.width = `${radius * 2}px`;
+                elements.circleOverlay.style.height = `${radius * 2}px`;
+                elements.circleOverlay.style.left = `${centerX - radius}px`;
+                elements.circleOverlay.style.top = `${centerY - radius}px`;
+            } else {
+                elements.circleOverlay.style.display = 'none';
+            }
+        }
+         
+        // 处理图片上传
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+             
+            // 检查文件类型
+            if (!file.type.match('image.*')) {
+                showMessage('请上传图片文件！', 'error');
+                return;
+            }
+             
+            // 检查文件大小（最大5MB）
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('文件大小不能超过5MB！', 'error');
+                return;
+            }
+             
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImage = new Image();
+                uploadedImage.onload = function() {
+                    // 显示预览（但保持隐藏状态）
+                    elements.uploadedImage.src = e.target.result;
+                    elements.imagePreviewContainer.style.display = 'none';
+                     
+                    // 显示图片处理选项
+                    elements.imageControls.style.display = 'block';
+                     
+                    // 重置位置和缩放
+                    elements.imageVertical.value = 0;
+                    elements.imageVerticalValue.textContent = '0px';
+                    elements.imageHorizontal.value = 0;
+                    elements.imageHorizontalValue.textContent = '0px';
+                    elements.imageScale.value = 100;
+                    elements.imageScaleValue.textContent = '100%';
+                     
+                    // 更新图片预览位置
+                    updateImagePreview();
+                     
+                    // 显示成功消息
+                    showMessage('图片上传成功！');
+                };
+                uploadedImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+         
+        // 绘制文字图标到Canvas
+        function drawTextIconToCanvas(ctx, size) {
+            const scale = size / 256;
+             
+            // 计算缩放后的字体大小 - 与预览完全一致
+            let fontSize = parseFloat(elements.fontSize.value) * scale;
+             
+            // 设置字体样式
+            let fontStyle = '';
+            if (textStyles.bold) fontStyle += 'bold ';
+             
+            ctx.font = `${fontStyle}${fontSize}px ${elements.fontFamily.value}`;
+            ctx.fillStyle = elements.textColor.value;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+             
+            // 获取文本内容
+            const textContent = elements.iconText.value;
+             
+            // 修复换行问题
+            const lines = textContent.split(/\r?\n/);
+             
+            // 计算行高
+            const lineSpacing = parseFloat(elements.lineSpacing.value);
+            const lineHeight = fontSize * lineSpacing;
+             
+            // 计算总高度
+            const totalHeight = (lines.length - 1) * lineHeight + fontSize;
+             
+            // 计算文本块顶部位置
+            const top = (size - totalHeight) / 2;
+             
+            // 应用偏移
+            const verticalOffset = parseFloat(elements.verticalOffset.value || 0) * scale;
+            const horizontalOffset = parseFloat(elements.horizontalOffset.value || 0) * scale;
+             
+            // 应用字体基线调整
+            const baselineAdjustment = fontSize * fontBaselineAdjustment;
+             
+            // 绘制每一行文本 - 不自动调整字体大小，保持与预览一致
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                // 计算当前行的y坐标
+                const y = top + (fontSize / 2) + (i * lineHeight) + verticalOffset + baselineAdjustment;
+                ctx.fillText(line, size / 2 + horizontalOffset, y);
+            }
+        }
+         
+        // 绘制图片图标到Canvas - 修复版
+        function drawImageIconToCanvas(ctx, size) {
+            const shape = elements.imageShape.value;
+            const cropMode = elements.cropMode.value;
+            const opacity = elements.imageOpacity.value / 100;
+            const verticalOffset = parseInt(elements.imageVertical.value);
+            const horizontalOffset = parseInt(elements.imageHorizontal.value);
+            const scale = parseInt(elements.imageScale.value) / 100;
+             
+            // 计算缩放因子（与预览保持一致）
+            const scaleFactor = size / 256;
+             
+            // 应用缩放后的偏移（与预览中的视觉效果完全匹配）
+            const scaledVerticalOffset = verticalOffset * scaleFactor;
+            const scaledHorizontalOffset = horizontalOffset * scaleFactor;
+            const finalScale = scale * scaleFactor;
+             
+            // 设置透明度
+            ctx.globalAlpha = opacity;
+             
+            // 创建裁剪区域
+            ctx.save();
+             
+            if (shape === 'circle') {
+                // 圆形裁剪
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+            } else if (shape === 'rounded') {
+                // 圆角矩形裁剪
+                const radius = size * 0.15;
+                ctx.beginPath();
+                ctx.moveTo(radius, 0);
+                ctx.lineTo(size - radius, 0);
+                ctx.quadraticCurveTo(size, 0, size, radius);
+                ctx.lineTo(size, size - radius);
+                ctx.quadraticCurveTo(size, size, size - radius, size);
+                ctx.lineTo(radius, size);
+                ctx.quadraticCurveTo(0, size, 0, size - radius);
+                ctx.lineTo(0, radius);
+                ctx.quadraticCurveTo(0, 0, radius, 0);
+                ctx.closePath();
+                ctx.clip();
+            }
+             
+            // 计算图片的绘制位置和大小（与预览逻辑完全一致）
+            const imageWidth = uploadedImage.width;
+            const imageHeight = uploadedImage.height;
+            const canvasAspect = 1; // 图标是正方形
+            const imageAspect = imageWidth / imageHeight;
+             
+            let drawWidth, drawHeight, drawX, drawY;
+             
+            if (cropMode === 'cover') {
+                // 覆盖模式 - 确保图片填充整个区域并保持比例
+                if (imageAspect >= canvasAspect) {
+                    drawHeight = size * finalScale;
+                    drawWidth = drawHeight * imageAspect;
+                } else {
+                    drawWidth = size * finalScale;
+                    drawHeight = drawWidth / imageAspect;
+                }
+            } else {
+                // 适应模式 - 确保图片完全可见并保持比例
+                if (imageAspect >= canvasAspect) {
+                    drawWidth = size * finalScale;
+                    drawHeight = drawWidth / imageAspect;
+                } else {
+                    drawHeight = size * finalScale;
+                    drawWidth = drawHeight * imageAspect;
+                }
+            }
+             
+            // 计算居中位置并应用偏移
+            drawX = (size - drawWidth) / 2 + scaledHorizontalOffset;
+            drawY = (size - drawHeight) / 2 + scaledVerticalOffset;
+             
+            // 绘制图片
+            ctx.drawImage(uploadedImage, drawX, drawY, drawWidth, drawHeight);
+             
+            // 重置透明度
+            ctx.globalAlpha = 1.0;
+             
+            // 恢复状态
+            ctx.restore();
+        }
+         
+        // 下载PNG图标
+        function downloadPng() {
+            const downloadSize = parseInt(elements.downloadSize.value);
+             
+            // 创建canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = downloadSize;
+            canvas.height = downloadSize;
+            const ctx = canvas.getContext('2d');
+             
+            // 绘制背景
+            if (activeTab === 'text' && !elements.transparentBg.checked) {
+                ctx.fillStyle = elements.bgColor.value;
+                drawBackground(ctx, downloadSize, activeTab === 'text' ? elements.iconShape.value : elements.imageShape.value);
+            } else {
+                ctx.clearRect(0, 0, downloadSize, downloadSize);
+            }
+             
+            // 根据当前模式绘制内容
+            if (activeTab === 'text') {
+                drawTextIconToCanvas(ctx, downloadSize);
+            } else if (activeTab === 'image' && uploadedImage) {
+                drawImageIconToCanvas(ctx, downloadSize);
+            } else {
+                showMessage('请先设置图标', 'error');
+                return;
+            }
+             
+            // 创建下载链接
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = `icon_${downloadSize}x${downloadSize}.png`;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+             
+            showMessage(`PNG图标已下载 (${downloadSize}×${downloadSize})`);
+        }
+         
+        // 绘制背景
+        function drawBackground(ctx, size, shape) {
+            if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (shape === 'rounded') {
+                const borderRadius = size * 0.15;
+                ctx.beginPath();
+                ctx.moveTo(borderRadius, 0);
+                ctx.lineTo(size - borderRadius, 0);
+                ctx.quadraticCurveTo(size, 0, size, borderRadius);
+                ctx.lineTo(size, size - borderRadius);
+                ctx.quadraticCurveTo(size, size, size - borderRadius, size);
+                ctx.lineTo(borderRadius, size);
+                ctx.quadraticCurveTo(0, size, 0, size - borderRadius);
+                ctx.lineTo(0, borderRadius);
+                ctx.quadraticCurveTo(0, 0, borderRadius, 0);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                ctx.fillRect(0, 0, size, size);
+            }
+        }
+         
+        // 下载ICO图标
+        function downloadIco() {
+            const downloadSize = parseInt(elements.downloadSize.value);
+             
+            // 创建canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = downloadSize;
+            canvas.height = downloadSize;
+            const ctx = canvas.getContext('2d');
+             
+            // 绘制背景
+            if (activeTab === 'text' && !elements.transparentBg.checked) {
+                ctx.fillStyle = elements.bgColor.value;
+                drawBackground(ctx, downloadSize, elements.iconShape.value);
+            } else {
+                // 透明背景
+                ctx.clearRect(0, 0, downloadSize, downloadSize);
+            }
+             
+            // 根据当前模式绘制内容
+            if (activeTab === 'text') {
+                drawTextIconToCanvas(ctx, downloadSize);
+            } else if (activeTab === 'image' && uploadedImage) {
+                drawImageIconToCanvas(ctx, downloadSize);
+            } else {
+                showMessage('请先设置图标', 'error');
+                return;
+            }
+             
+            // 获取PNG数据
+            const pngData = canvas.toDataURL('image/png').split(',')[1];
+            const pngBuffer = Uint8Array.from(atob(pngData), c => c.charCodeAt(0));
+             
+            // 创建ICO文件头
+            const icoHeader = new Uint8Array([
+                0, 0, // Reserved
+                1, 0, // Image type (ICO)
+                1, 0  // Number of images
+            ]);
+             
+            // 创建ICO目录项
+            const icoDir = new Uint8Array(16);
+            icoDir[0] = downloadSize > 255 ? 0 : downloadSize; // Width
+            icoDir[1] = downloadSize > 255 ? 0 : downloadSize; // Height
+            icoDir[2] = 0; // Color palette
+            icoDir[3] = 0; // Reserved
+            icoDir[4] = 1; icoDir[5] = 0; // Color planes
+            icoDir[6] = 32; icoDir[7] = 0; // Bits per pixel
+             
+            // 设置图像数据大小
+            const size = pngBuffer.length;
+            icoDir[8] = size & 0xFF;
+            icoDir[9] = (size >> 8) & 0xFF;
+            icoDir[10] = (size >> 16) & 0xFF;
+            icoDir[11] = (size >> 24) & 0xFF;
+             
+            // 设置图像数据偏移量
+            const offset = icoHeader.length + icoDir.length;
+            icoDir[12] = offset & 0xFF;
+            icoDir[13] = (offset >> 8) & 0xFF;
+            icoDir[14] = (offset >> 16) & 0xFF;
+            icoDir[15] = (offset >> 24) & 0xFF;
+             
+            // 合并所有数据
+            const icoData = new Uint8Array(icoHeader.length + icoDir.length + pngBuffer.length);
+            icoData.set(icoHeader);
+            icoData.set(icoDir, icoHeader.length);
+            icoData.set(pngBuffer, icoHeader.length + icoDir.length);
+             
+            // 创建Blob
+            const blob = new Blob([icoData], { type: 'image/x-icon' });
+             
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `icon_${downloadSize}x${downloadSize}.ico`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+             
+            // 清理
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                showMessage(`ICO图标已下载 (${downloadSize}×${downloadSize})`);
+            }, 100);
+        }
+         
+        // 切换调试模式
+        function toggleDebugMode() {
+            debugMode = !debugMode;
+             
+            if (debugMode) {
+                elements.centerGuides.style.display = 'none';
+                elements.centerIndicator.style.display = 'none';
+                elements.textCenterBox.style.display = 'none';
+                elements.toggleDebugBtn.innerHTML = '<i class="fas fa-eye"></i> 显示参考线';
+            } else {
+                elements.centerGuides.style.display = 'block';
+                elements.centerIndicator.style.display = 'block';
+                elements.textCenterBox.style.display = 'block';
+                elements.toggleDebugBtn.innerHTML = '<i class="fas fa-eye-slash"></i> 隐藏参考线';
+            }
+        }
+         
+        // 显示消息
+        function showMessage(message, type = 'success') {
+            elements.messageText.textContent = message;
+            elements.successMessage.className = 'success-message';
+            if (type === 'error') elements.successMessage.classList.add('error');
+             
+            elements.successMessage.style.opacity = '1';
+            setTimeout(() => {
+                elements.successMessage.style.opacity = '0';
+            }, 3000);
+        }
+         
+        // 初始化事件监听器
+        function initEventListeners() {
+            // 标签页切换
+            elements.textTabBtn.addEventListener('click', () => openTab('text'));
+            elements.imageTabBtn.addEventListener('click', () => openTab('image'));
+             
+            // 文字样式（仅保留加粗）
+            elements.boldBtn.addEventListener('click', () => toggleTextStyle('bold'));
+             
+            // 输入变化
+            elements.fontSize.addEventListener('input', updateFontSize);
+            elements.lineSpacing.addEventListener('input', updateLineSpacing);
+            elements.verticalOffset.addEventListener('input', updateVerticalOffset);
+            elements.horizontalOffset.addEventListener('input', updateHorizontalOffset);
+            elements.textColor.addEventListener('input', updateColorPreviews);
+            elements.bgColor.addEventListener('input', updateColorPreviews);
+            elements.iconText.addEventListener('input', updateTextPreview);
+            elements.transparentBg.addEventListener('change', updateColorPreviews);
+            elements.fontFamily.addEventListener('change', updateTextPreview);
+            elements.iconShape.addEventListener('change', updateTextPreview);
+            elements.fontBaseline.addEventListener('input', updateFontBaseline);
+             
+            elements.imageOpacity.addEventListener('input', updateImageOpacity);
+            elements.imageVertical.addEventListener('input', updateImageVertical);
+            elements.imageHorizontal.addEventListener('input', updateImageHorizontal);
+            elements.imageScale.addEventListener('input', updateImageScale);
+            elements.imageShape.addEventListener('change', updateImagePreview);
+             
+            // 裁剪模式切换
+            elements.cropMode.addEventListener('change', updateImagePreview);
+             
+            // 下载按钮
+            elements.downloadPngBtn.addEventListener('click', downloadPng);
+            elements.downloadIcoBtn.addEventListener('click', downloadIco);
+             
+            // 更新日志
+            elements.updateLog.addEventListener('click', function() {
+                this.classList.toggle('expanded');
+                const icon = this.querySelector('i');
+                icon.className = this.classList.contains('expanded') 
+                    ? 'fas fa-chevron-up' 
+                    : 'fas fa-chevron-down';
+            });
+             
+            // 调试模式切换
+            elements.toggleDebugBtn.addEventListener('click', toggleDebugMode);
+             
+            // 图片上传
+            elements.uploadArea.addEventListener('click', () => elements.imageUpload.click());
+            elements.imageUpload.addEventListener('change', handleImageUpload);
+             
+             
+            // 拖放功能
+            elements.uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                elements.uploadArea.style.borderColor = '#4CAF50';
+                elements.uploadArea.style.background = 'rgba(0,0,0,0.2)';
+            });
+             
+            elements.uploadArea.addEventListener('dragleave', () => {
+                elements.uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                elements.uploadArea.style.background = 'rgba(0,0,0,0.1)';
+            });
+             
+            elements.uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                elements.uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                elements.uploadArea.style.background = 'rgba(0,0,0,0.1)';
+                 
+                if (e.dataTransfer.files.length) {
+                    elements.imageUpload.files = e.dataTransfer.files;
+                    handleImageUpload({target: {files: e.dataTransfer.files}});
+                }
+            });
+        }
+         
+        // 初始化页面
+        function init() {
+            initEventListeners();
+            updateTextPreview();
+            updateFontSize();
+            updateLineSpacing();
+            updateVerticalOffset();
+            updateHorizontalOffset();
+            updateFontBaseline();
+            updateColorPreviews();
+            centerTextPreview();
+            updateImageOpacity();
+            updateImageVertical();
+            updateImageHorizontal();
+            updateImageScale();
+            toggleDebugMode();
+             
+            // 设置中心指示器位置
+            const centerIndicator = elements.centerIndicator;
+            centerIndicator.style.left = 'calc(50% - 9px)';
+            centerIndicator.style.top = 'calc(50% - 9px)';
+        }
+         
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+</html>
