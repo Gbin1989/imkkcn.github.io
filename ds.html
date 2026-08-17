@@ -1,99 +1,124 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="KuDog Xy的电视直播，各地电视直播频道在线观看">
+<link rel="icon" href="https://api.iconify.design/mdi:television.svg" type="image/svg+xml">
+<title>KuDog Xy的电视直播</title>
 <script src="https://static.vzan.com/zhibo/paas/sdk/jssdk/demo/play/v1.0.24/VZANPlayer.js"></script>
-<style>html,body{margin:0px 0px;background:#000;}</style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:#000;color:#fff;overflow:hidden;}
+.wrap{display:flex;height:100%;}
+.channel-list{
+ width:260px;
+ background:#1a1a1a;
+ overflow-y:auto;
+ padding:8px;
+}
+.channel-item{
+ padding:11px 12px;
+ margin:4px 0;
+ background:#2c2c2c;
+ cursor:pointer;
+ border-radius:4px;
+ font-size:14px;
+}
+.channel-item:hover{background:#404040;}
+.channel-item.active{background:#0066cc;}
+.player-wrap{flex:1;height:100%;}
+#vzanvideo{width:100%;height:100%;display:block;}
+</style>
 </head>
 <body>
-<video id="vzanvideo" style="width:100%;height:100%"></video>
+<div class="wrap">
+ <div class="channel-list" id="channelList"></div>
+ <div class="player-wrap">
+ <video id="vzanvideo"></video>
+ </div>
+</div>
 <script>
-const n = {
-cczh : [1484002802,1167747718], //长春综合
-ccsm : [1484002802,1176395885], //长春市民生活
-ccwt : [1484002802,516924236], //长春文旅体 育
-ccgb880 : [1484002802,1658771309], //长春广播FM88.0
-ccgb1063 : [1484002802,1462721286], //长春广播FM106.3
-ccgb889 : [1484002802,185982981], //长春广播FM88.9
-ccgb968 : [1484002802,110631981], //长春广播FM96.8
+//简单防查看源码（仅防小白）
+document.oncontextmenu=function(){return false;};
+document.onkeydown=function(e){
+ if(e.keyCode===123) return false;
+ if(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===74||e.keyCode===67)) return false;
+ if(e.ctrlKey&&e.keyCode===85) return false;
+};
 
-tgzh : [1725814272,1516989100], //山西晋中|太谷综合
-tggb : [1725814272,721895481], //山西晋中|太谷综合广播
-
-jxtv : [235832,1257746060], //山西晋中|介休电视
-
-lszh : [1135473620,694406711], //山西吕梁|离石综合
-
-xyzh : [357691,1512279918], //山西吕梁|孝义新闻综合
-
-mcxw : [200263,1914190744], //安徽亳州|蒙城新闻
-
-tlxw : [639013,814175747], //安徽铜陵新闻
-
-smdzh : [627898,1085533011], //驻马店新闻综合频道
-zmdkj : [627898,1245953367], //驻马店科教频道
-zmdgg : [627898,1835926220], //驻马店公共频道
-
-syzh : [351104,622879110], //十堰新闻综合
-syjj : [351104,1550600621], //十堰经济旅游
-
-hnjs : [627119,152199049], //湖南经视
-
-lnzh : [1670294060,135638836], //江西赣州龙南新闻
-
-gzxz : [983533065,1396076621], //赣州新闻综合
-gzjs : [983533065,421338742], //赣州经济生活
-
-lhzh : [720020,1493343713], //江苏南京|六合新闻综合
-
-hnzh : [293304,1708007815], //浙江海宁|新闻综合
-hnsh : [293304,1242115969], //浙江海宁|生活服务
-hngb : [293304,1472932546], //浙江海宁|FM96大潮之声
-
-jszh : [20949943,400224319], //浙江嘉兴|嘉善新闻综合
-jsgb : [20949943,1067587344], //浙江嘉兴|嘉善广播FM993
-
-cltv : [839846767,1887127400], //福建福州|长乐电视台
-clgb : [839846767,1797914062], //福建福州|长乐广播
-
-whzh : [2100036413,1448741529], //广东梅州|五华台直播
-whgb : [2100036413,181820497], //广东梅州|五华广播电
-
-fszh : [701678271,1575936258], //广东梅州|丰顺综合
-fsgb : [701678271,281495940], //广东梅州|丰顺人民广播电台
-
-hztv : [2041524912,1933628831], //广西南宁|横州电视
-
-latv : [989914849,317853869], //广西南宁|隆安电视台
-lagb : [989914849,1451433599], //广西南宁|隆安人民广播电台（FM102.8）
-
-qxgtv : [1681337293,1238781131], //贵州毕节七星关电视台
-qxggb : [1681337293,1813207566], //贵州毕节七星关FM91.2综合广播
-
-jttv : [2029575354,1834038033], //四川成都|金堂县电视
-jtgb : [2029575354,173732229], //四川成都|金堂县电台
-
-kctv : [218800995,208366456], //新疆阿克苏|库车TV-1
-
-yzws : [2046370057,721277438], //亞洲卫视
-
-xjws : [1480442386,1480442386], //香江卫视文旅产业
-}
-const url = new URLSearchParams(location.search);
-const id = url.get('id') || "yzws";
-const liveId = n[id][0];
-const vid = n[id][1];
-
+const channelMap = {
+cczh : {liveId:1484002802,vid:1167747718,name:"长春综合"},
+ccsm : {liveId:1484002802,vid:1176395885,name:"长春市民生活"},
+ccwt : {liveId:1484002802,vid:516924236,name:"长春文旅体育"},
+ccgb880 : {liveId:1484002802,vid:1658771309,name:"长春广播FM88.0"},
+ccgb1063 : {liveId:1484002802,vid:1462721286,name:"长春广播FM106.3"},
+ccgb889 : {liveId:1484002802,vid:185982981,name:"长春广播FM88.9"},
+ccgb968 : {liveId:1484002802,vid:110631981,name:"长春广播FM96.8"},
+tgzh : {liveId:1725814272,vid:1516989100,name:"山西晋中太谷综合"},
+tggb : {liveId:1725814272,vid:721895481,name:"山西晋中太谷综合广播"},
+jxtv : {liveId:235832,vid:1257746060,name:"山西晋中介休电视"},
+lszh : {liveId:1135473620,vid:694406711,name:"山西吕梁离石综合"},
+xyzh : {liveId:357691,vid:1512279918,name:"山西吕梁孝义新闻综合"},
+mcxw : {liveId:200263,vid:1914190744,name:"安徽亳州蒙城新闻"},
+tlxw : {liveId:639013,vid:814175747,name:"安徽铜陵新闻"},
+smdzh : {liveId:627898,vid:1085533011,name:"驻马店新闻综合频道"},
+zmdkj : {liveId:627898,vid:1245953367,name:"驻马店科教频道"},
+zmdgg : {liveId:627898,vid:1835926220,name:"驻马店公共频道"},
+syzh : {liveId:351104,vid:622879110,name:"十堰新闻综合"},
+syjj : {liveId:351104,vid:1550600621,name:"十堰经济旅游"},
+hnjs : {liveId:627119,vid:152199049,name:"湖南经视"},
+lnzh : {liveId:1670294060,vid:135638836,name:"江西赣州龙南新闻"},
+gzxz : {liveId:983533065,vid:1396076621,name:"赣州新闻综合"},
+gzjs : {liveId:983533065,vid:421338742,name:"赣州经济生活"},
+lhzh : {liveId:720020,vid:1493343713,name:"江苏南京六合新闻综合"},
+hnzh : {liveId:293304,vid:1708007815,name:"浙江海宁新闻综合"},
+hnsh : {liveId:293304,vid:1242115969,name:"浙江海宁生活服务"},
+hngb : {liveId:293304,vid:1472932546,name:"浙江海宁FM96大潮之声"},
+jszh : {liveId:20949943,vid:400224319,name:"浙江嘉兴嘉善新闻综合"},
+jsgb : {liveId:20949943,vid:1067587344,name:"浙江嘉兴嘉善广播FM993"},
+cltv : {liveId:839846767,vid:1887127400,name:"福建福州长乐电视台"},
+clgb : {liveId:839846767,vid:1797914062,name:"福建福州长乐广播"},
+whzh : {liveId:2100036413,vid:1448741529,name:"广东梅州五华台直播"},
+whgb : {liveId:2100036413,vid:181820497,name:"广东梅州五华广播电"},
+fszh : {liveId:701678271,vid:1575936258,name:"广东梅州丰顺综合"},
+fsgb : {liveId:701678271,vid:281495940,name:"广东梅州丰顺人民广播电台"},
+hztv : {liveId:2041524912,vid:1933628831,name:"广西南宁横州电视"},
+latv : {liveId:989914849,vid:317853869,name:"广西南宁隆安电视台"},
+lagb : {liveId:989914849,vid:1451433599,name:"广西南宁隆安FM102.8广播"},
+qxgtv : {liveId:1681337293,vid:1238781131,name:"贵州毕节七星关电视台"},
+qxggb : {liveId:1681337293,vid:1813207566,name:"贵州毕节七星关FM91.2广播"},
+jttv : {liveId:2029575354,vid:1834038033,name:"四川成都金堂县电视"},
+jtgb : {liveId:2029575354,vid:173732229,name:"四川成都金堂县电台"},
+kctv : {liveId:218800995,vid:208366456,name:"新疆阿克苏库车TV‑1"},
+yzws : {liveId:2046370057,vid:721277438,name:"亚洲卫视"},
+xjws : {liveId:1480442386,vid:1480442386,name:"香江卫视文旅产业"}
+};
+const urlSearch = new URLSearchParams(location.search);
+const currentKey = urlSearch.get('id') || "yzws";
+const listDom = document.getElementById('channelList');
+Object.keys(channelMap).forEach(key=>{
+ const ch = channelMap[key];
+ const div = document.createElement('div');
+ div.className = 'channel-item';
+ div.dataset.key = key;
+ div.innerText = ch.name;
+ if(key === currentKey) div.classList.add('active');
+ div.onclick = ()=>{
+ location.href = `?id=${key}`;
+ };
+ listDom.appendChild(div);
+});
+const initCh = channelMap[currentKey];
 new VZANPlayer('vzanvideo', {
-                playerType: 'common', // sdk类型
-                liveId: liveId, // 直播间id
-                type: 'live', // 视频源类型
-                vid: vid, // 视频源id
-                width:'100%',
-                height:'100%',
-                autoplay:true,     
-                fullscreen: true // 开启全屏支持
-                });
+ playerType: 'common',
+ liveId: initCh.liveId,
+ type: 'live',
+ vid: initCh.vid,
+ width:'100%',
+ height:'100%',
+ autoplay:true,
+ fullscreen:true
+});
 </script>
 </body>
 </html>
